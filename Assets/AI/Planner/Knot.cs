@@ -57,7 +57,7 @@ public class Knot : ObjectBase
     /// <summary>
     /// The radius of a knot point.
     /// </summary>
-    private static double TheRadius = 5;
+    private static double TheRadius = 0.01;
 
 
 

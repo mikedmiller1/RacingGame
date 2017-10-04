@@ -32,6 +32,7 @@ public class PlayerController : MonoBehaviour {
     /// <summary>
     /// Radius within which the player has arrived at the destination.
     /// </summary>
+    [HideInInspector]
     public float ArriveRadius;
 
 
@@ -47,6 +48,13 @@ public class PlayerController : MonoBehaviour {
     /// Flag to control extra debug information.
     /// </summary>
     public bool Debugging;
+
+
+
+    /// <summary>
+    /// Flag to control the planner checking a direct path to the goal.
+    /// </summary>
+    public bool CheckDirectPath;
 
     #endregion
 
@@ -81,20 +89,28 @@ public class PlayerController : MonoBehaviour {
         }
 
 
-        // Assign the destination
-        Destination.x = (float)AiDriver.X;
-        Destination.z = (float)AiDriver.Y;
-
         // Get the distance from the current position to the destination
         Vector3 Towards = Destination - transform.position;
         float RemainingDistance = Towards.magnitude;
 
         // If we are not at the destination
-        if ( RemainingDistance > ArriveRadius )
+        if( RemainingDistance > ArriveRadius )
         {
             // Move towards the destination
             MoveTo( Destination );
         }
+
+        else
+        {
+            // Perform navigation
+            AiDriver.Navigate();
+
+            // Assign the destination
+            Destination.x = (float)AiDriver.X;
+            Destination.z = (float)AiDriver.Y;
+        }
+
+        
     }
 
     #endregion
@@ -114,9 +130,9 @@ public class PlayerController : MonoBehaviour {
         Quaternion TowardsRotation = Quaternion.LookRotation( Towards );
 
         // Rotate to the destination
-        transform.rotation = Quaternion.Slerp( transform.rotation, TowardsRotation, Time.deltaTime * 8 );
+        transform.rotation = Quaternion.Lerp( transform.rotation, TowardsRotation, Time.deltaTime * 8 );
 
-
+        /*
         // If the movement would exceed the maximum speed allowed
         if ( Towards.magnitude > MaxSpeed )
         {
@@ -126,6 +142,13 @@ public class PlayerController : MonoBehaviour {
             // Move at the maximum speed
             Towards *= MaxSpeed;
         }
+        */
+
+        // Normalize to a unit vector
+        Towards.Normalize();
+
+        // Move at the maximum speed
+        Towards *= MaxSpeed;
 
         // Move the player
         rb.velocity = Towards;

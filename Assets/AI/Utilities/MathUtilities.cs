@@ -338,11 +338,10 @@ public static class MathUtilities
     /// </summary>
     /// <param name="Weights">An array of weights to apply to the random distribution.</param>
     /// <returns>The index of the weight.</returns>
-    public static int GetWeightedRandom( double[] Weights )
+    public static int GetWeightedRandom( double[] Weights, System.Random Rand )
     {
         // Get a random value between 0 and 1
-        System.Random Random = new System.Random();
-        double r = Random.NextDouble();
+        double r = Rand.NextDouble();
 
 
         // Initialize the total weight
@@ -377,6 +376,31 @@ public static class MathUtilities
         // If we get here, something went wrong
         // Return -1
         return -1;
+    }
+
+
+
+    /// <summary>
+    /// Returns a random number in the specified range.
+    /// </summary>
+    /// <param name="Min">The minimum value.</param>
+    /// <param name="Max">The maximum value.</param>
+    /// <param name="Rand">An instance of a random number generator to use.</param>
+    /// <returns>A random number between the min and max, inclusive.</returns>
+    public static double GetRandomInRange( double Min, double Max, System.Random Rand )
+    {
+        // Get a random value between 0 and 1
+        double r = Rand.NextDouble();
+
+        // Get the range
+        double Range = Max - Min;
+
+        // Scale the number to the range
+        double ScaledRandom = Min + Range * r;
+
+
+        // Return the random number
+        return ScaledRandom;
     }
 }
 

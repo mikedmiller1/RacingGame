@@ -48,6 +48,13 @@ public class GameController : MonoBehaviour
     [HideInInspector]
     public List<GameObject> Waypoints;
 
+
+
+    /// <summary>
+    /// Radius within which the player has arrived at the destination.
+    /// </summary>
+    public float ArriveRadius;
+
     #endregion
 
 
@@ -60,7 +67,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         // Initialize the AI driver environment
-        Environment = new Environment( 5, 5 );
+        Environment = new Environment( -10, 10, -10, 10 );
 
 
         // Define a list of waypoint coordiantes
@@ -77,7 +84,7 @@ public class GameController : MonoBehaviour
             Waypoints.Add( Instantiate( WaypointPrefab, CurrentCoordinate, Quaternion.identity ) );
 
             // Add the waypoint as a goal in the AI environment
-            Environment.Goals.Add( new Goal( CurrentCoordinate, 0.001 ) );
+            Environment.Goals.Add( new Goal( CurrentCoordinate, ArriveRadius ) );
         }
 
 
@@ -96,11 +103,15 @@ public class GameController : MonoBehaviour
         // Initialize the AI drivers
         foreach( GameObject Player in Players )
         {
+            // Create a new driver
             Player.GetComponent<PlayerController>().AiDriver = new Driver( Environment, Player.transform.position.x, Player.transform.position.z, 0.5 );
+            Player.GetComponent<PlayerController>().AiDriver.ShouldCheckDirectPath = Player.GetComponent<PlayerController>().CheckDirectPath;
+            Player.GetComponent<PlayerController>().AiDriver.Speed = Player.GetComponent<PlayerController>().MaxSpeed;
+            Player.GetComponent<PlayerController>().ArriveRadius = ArriveRadius;
         }
 
 
-        // Initialize the AI driver
+        // Start the AI drivers
         foreach( GameObject Player in Players )
         {
             // Start the driver

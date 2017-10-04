@@ -13,11 +13,13 @@ public class Environment
     /// </summary>
     /// <param name="Height">The height of the environment.</param>
     /// <param name="Width">The width of the environment.</param>
-    public Environment( int Height, int Width )
+    public Environment( double XMin, double XMax, double YMin, double YMax )
     {
         // Assign the properties
-        this._Height = Height;
-        this._Width = Width;
+        this.XMin = XMin;
+        this.XMax = XMax;
+        this.YMin = YMin;
+        this.YMax = YMax;
     }
 
     #endregion
@@ -71,55 +73,50 @@ public class Environment
 
 
 
-    private List<Path> _AllPaths = new List<Path>();
+    private double _XMin;
     /// <summary>
-    /// The paths of all the drivers in the environment.
+    /// The minimum X value of the environment.
     /// </summary>
-    public List<Path> AllPaths
+    public double XMin
     {
-        get { return _AllPaths; }
-        set
-        {
-            _AllPaths = value;
-        }
+        get { return _XMin; }
+        set { _XMin = value; }
     }
 
 
 
-
-    private Path _BestPath;
+    private double _XMax;
     /// <summary>
-    /// The best path of the driver.
+    /// The maximum X value of the environment.
     /// </summary>
-    public Path BestPath
+    public double XMax
     {
-        get { return _BestPath; }
-        set
-        {
-            _BestPath = value;
-        }
+        get { return _XMax; }
+        set { _XMax = value; }
     }
 
 
 
-    private int _Height;
+    private double _YMin;
     /// <summary>
-    /// The height of the environment
+    /// The minimum Y value of the environment.
     /// </summary>
-    public int Height
+    public double YMin
     {
-        get { return _Height; }
+        get { return _YMin; }
+        set { _YMin = value; }
     }
 
 
 
-    private int _Width;
+    private double _YMax;
     /// <summary>
-    /// The width of the environment
+    /// The maximum Y value of the environment.
     /// </summary>
-    public int Width
+    public double YMax
     {
-        get { return _Width; }
+        get { return _YMax; }
+        set { _YMax = value; }
     }
 
 

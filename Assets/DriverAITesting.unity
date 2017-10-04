@@ -393,6 +393,7 @@ MonoBehaviour:
   WaypointPrefab: {fileID: 1613834515478130, guid: 67285761adad52c46ab001d0ed164944,
     type: 2}
   Waypoints: []
+  ArriveRadius: 1
 --- !u!4 &2090406166
 Transform:
   m_ObjectHideFlags: 0

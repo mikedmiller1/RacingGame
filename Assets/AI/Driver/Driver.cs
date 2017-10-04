@@ -25,16 +25,15 @@ public class Driver : ObjectBase
         // Set the environment reference
         this.Environment = Environment;
 
-        // Set up the move and plan timers
+        // Get the goals
+        LookForGoals();
+
+        // Set up the planner timer
         PlanTimer = new System.Timers.Timer( PlanInterval );
         PlanTimer.Elapsed += new ElapsedEventHandler( Plan );
 
-        MoveTimer = new System.Timers.Timer( MoveInterval );
-        MoveTimer.Elapsed += new ElapsedEventHandler( Navigate );
-
-        // Start the timers
+        // Start the timer
         PlanTimer.Enabled = true;
-        MoveTimer.Enabled = true;
     }
 
     #endregion
@@ -75,21 +74,6 @@ public class Driver : ObjectBase
 
 
 
-    private int _MoveInterval = 20;
-    /// <summary>
-    /// The interval between moves, in milliseconds.
-    /// </summary>
-    public int MoveInterval
-    {
-        get { return _MoveInterval; }
-        set
-        {
-            _MoveInterval = value;
-        }
-    }
-
-
-
     private double _Speed = 0.1;
     /// <summary>
     /// The speed of the driver, in meters per time-step.
@@ -98,6 +82,21 @@ public class Driver : ObjectBase
     {
         get { return _Speed; }
         set { _Speed = value; }
+    }
+
+
+
+    private List<Goal> _Goals = new List<Goal>();
+    /// <summary>
+    /// The driver's goals.
+    /// </summary>
+    public List<Goal> Goals
+    {
+        get { return _Goals; }
+        set
+        {
+            _Goals = value;
+        }
     }
 
 
@@ -190,14 +189,14 @@ public class Driver : ObjectBase
 
 
     /// <summary>
-    /// Timer controlling the navigation.
+    /// Lock to control access to Goals.
     /// </summary>
-    private System.Timers.Timer MoveTimer;
+    public Mutex GoalMutex = new Mutex();
 
 
 
     /// <summary>
-    /// Timer controlling the planning.
+    /// Timer controlling the planner.
     /// </summary>
     private System.Timers.Timer PlanTimer;
 
@@ -257,7 +256,7 @@ public class Driver : ObjectBase
 
 
 
-    private int _NumberOfPaths = 20;
+    private int _NumberOfPaths = 5;
     /// <summary>
     /// The number of possible paths to maintain at all times.
     /// </summary>
@@ -294,7 +293,7 @@ public class Driver : ObjectBase
 
 
 
-    private double _SafeDistance = 10;
+    private double _SafeDistance = 1;
     /// <summary>
     /// A "safe" distance around obstacles when evaluating the clear metric.
     /// </summary>
@@ -357,15 +356,36 @@ public class Driver : ObjectBase
     /// <summary>
     /// The weighted probabilities of selecting each of the mutation operators.
     /// Values obtained from G3.11 - Evolutionary planner/navigator in a mobile driver environment.
+    ///     { 0.6, 0.8, 0.5, 0.5, 0.5, 0.5, 0.9, 0.8 }
+    /// Operators:
+    ///     Crossover
+    ///     MutationSmall
+    ///     MutationLarge
+    ///     Insert
+    ///     Delete
+    ///     Swap
+    ///     Smooth
+    ///     Repair
     /// </summary>
-    private double[] OperatorProbabilities = new double[ 8 ] { 0.6, 0.8, 0.5, 0.5, 0.5, 0.5, 0.9, 0.8 };
-
+    private double[] OperatorProbabilities = new double[ 8 ] { 0, 0.8, 0.5, 0.5, 0.5, 0.5, 0, 0.8 };
 
 
     /// <summary>
     /// The tolerance to allow when checking if the driver has reached a knot or goal.
     /// </summary>
-    private double DistanceTolerance = 0.001;
+    private double DistanceTolerance = 0.1;
+
+
+
+    private bool _ShouldCheckDirectPath = true;
+    /// <summary>
+    /// Flag indicating if the planner should check for a direct path to the goal.
+    /// </summary>
+    public bool ShouldCheckDirectPath
+    {
+        get { return _ShouldCheckDirectPath; }
+        set { _ShouldCheckDirectPath = value; }
+    }
 
     #endregion
 
@@ -377,10 +397,10 @@ public class Driver : ObjectBase
     /// Attempts to move the driver from it's current position to the nearest goal using the current best path.
     /// Avoids obstacles and other robots.
     /// </summary>
-    public void Navigate( object sender, ElapsedEventArgs e )
+    public void Navigate()
     {
         // If the navigation is ready and activated
-        if ( RunSimulation && NavigationReady && NavigationActive )
+        if( RunSimulation && NavigationReady && NavigationActive )
         {
             // Move the driver
             Move();
@@ -388,6 +408,18 @@ public class Driver : ObjectBase
             // Check if a knot or goal has been reached
             CheckPosition();
         }
+    }
+
+
+
+    /// <summary>
+    /// Attempts to move the driver from it's current position to the nearest goal using the current best path.
+    /// Avoids obstacles and other robots.
+    /// Method call for the timer trigger.
+    /// </summary>
+    public void Navigate( object sender, ElapsedEventArgs e )
+    {
+        Navigate();
     }
 
 
@@ -401,7 +433,9 @@ public class Driver : ObjectBase
         if ( RunSimulation && PlannerActive )
         {
             // Get the current closest goal
+            GoalMutex.WaitOne();
             Goal CurrentClosestGoal = GetNextGoal();
+            GoalMutex.ReleaseMutex();
 
             // If there is no goal (null) then stop the driver
             if ( CurrentClosestGoal == null )
@@ -414,7 +448,9 @@ public class Driver : ObjectBase
             if ( CurrentGoal != CurrentClosestGoal )
             {
                 // Assign the closest goal as the current goal
+                GoalMutex.WaitOne();
                 CurrentGoal = CurrentClosestGoal;
+                GoalMutex.ReleaseMutex();
 
                 // Generate a set of possible paths
                 GeneratePaths();
@@ -430,7 +466,10 @@ public class Driver : ObjectBase
             EvaluatePaths();
 
             // Check for a direct path
-            CheckDirectPath();
+            if( ShouldCheckDirectPath )
+            {
+                CheckDirectPath();
+            }
 
             // Mutate paths
             MutatePaths();
@@ -467,7 +506,7 @@ public class Driver : ObjectBase
             // Subtract two for the first (driver) and last (goal) knots
             for ( int KnotNum = 0; KnotNum < NumberOfKnots - 1; KnotNum++ )
             {
-                NewPath.AddKnot( new Knot( Random.Next( 1, Environment.Width ), Random.Next( 1, Environment.Height ) ) );
+                NewPath.AddKnot( new Knot( MathUtilities.GetRandomInRange( Environment.XMin, Environment.XMax, Random ), MathUtilities.GetRandomInRange( Environment.YMin, Environment.YMax, Random ) ) );
             }
 
             // Set the last knot to the goal
@@ -504,6 +543,14 @@ public class Driver : ObjectBase
 
         // Sort the paths by cost, from lowest to highest
         Paths.Sort();
+
+        // If the best path cost is 0, there is something wrong
+        if( Paths[0].Cost == 0 )
+        {
+            // Regenerate the paths
+            PathMutex.ReleaseMutex();
+            GeneratePaths();
+        }
 
         // Release the mutex
         PathMutex.ReleaseMutex();
@@ -642,7 +689,7 @@ public class Driver : ObjectBase
         { return; }
 
         // Randomly choose a mutation operation
-        Operator Mutation = (Operator)MathUtilities.GetWeightedRandom( OperatorProbabilities );
+        Operator Mutation = (Operator)MathUtilities.GetWeightedRandom( OperatorProbabilities, Random );
 
         // Get weights for each path based on the cost
         // Lower cost paths have a higher weight so they are more likely to be selected
@@ -658,7 +705,7 @@ public class Driver : ObjectBase
         }
 
         // Randomly choose a path
-        int PathIndex = MathUtilities.GetWeightedRandom( PathWeights );
+        int PathIndex = MathUtilities.GetWeightedRandom( PathWeights, Random );
         Path CurrentPath = PathsCopy[ PathIndex ];
 
         // If the path has 0 or 1 knots, there is nothing to mutate
@@ -691,7 +738,7 @@ public class Driver : ObjectBase
                 // Loop until we pick a second path that is not the first path and has sufficient knots
                 do
                 {
-                    PathIndex2 = MathUtilities.GetWeightedRandom( PathWeights );
+                    PathIndex2 = MathUtilities.GetWeightedRandom( PathWeights, Random );
                     CurrentPath2 = PathsCopy[ PathIndex2 ];
                 }
                 while ( PathIndex != PathIndex2 && CurrentPath2.NumberOfKnots > 2 );
@@ -794,7 +841,7 @@ public class Driver : ObjectBase
                 KnotIndex = Random.Next( 1, CurrentPath.NumberOfKnots - 1 );
 
                 // Insert a new knot at a random coordinate
-                NewPath.InsertKnot( KnotIndex, new Knot( Random.Next( 1, Environment.Height ), Random.Next( 1, Environment.Width ) ) );
+                NewPath.InsertKnot( KnotIndex, new Knot( MathUtilities.GetRandomInRange( Environment.XMin, Environment.XMax, Random ), MathUtilities.GetRandomInRange( Environment.YMin, Environment.YMax, Random ) ) );
                 break;
 
 
@@ -811,7 +858,7 @@ public class Driver : ObjectBase
                 KnotIndex = Random.Next( 1, CurrentPath.NumberOfKnots - 1 );
 
                 // Replace the knot with a random coordinate
-                NewPath.ReplaceKnot( KnotIndex, new Knot( Random.Next( 1, Environment.Height ), Random.Next( 1, Environment.Width ) ) );
+                NewPath.ReplaceKnot( KnotIndex, new Knot( MathUtilities.GetRandomInRange( Environment.XMin, Environment.XMax, Random ), MathUtilities.GetRandomInRange( Environment.YMin, Environment.YMax, Random ) ) );
                 break;
 
 
@@ -828,7 +875,7 @@ public class Driver : ObjectBase
                 KnotIndex = Random.Next( 1, CurrentPath.NumberOfKnots - 1 );
 
                 // Define the radius of the small mutation
-                double SmallRadius = 25;
+                double SmallRadius = 1;
 
                 // Get random numbers between -1 and 1
                 double XScalar = (Random.NextDouble() * 2) - 1;
@@ -1031,8 +1078,6 @@ public class Driver : ObjectBase
 
         // If the current knot is null or NaN, exit
         if ( CurrentKnotCopy == null ||
-            //CurrentKnotCopy.X == 0 ||
-            //CurrentKnotCopy.Y == 0 ||
             Double.IsNaN( CurrentKnotCopy.X ) ||
             Double.IsNaN( CurrentKnotCopy.Y ) )
         { return; }
@@ -1102,16 +1147,18 @@ public class Driver : ObjectBase
             // Remove it from the path
             CurrentBestPath.RemoveKnot( 1 );
         }
-        PathMutex.WaitOne();
+        PathMutex.ReleaseMutex();
 
 
         // If the driver has reached the current goal
+        GoalMutex.WaitOne();
         if ( (Math.Abs( X - CurrentGoal.X ) < DistanceTolerance) && (Math.Abs( Y - CurrentGoal.Y ) < DistanceTolerance) )
         {
             // Move it to the end of the goals list
-            Environment.Goals.Add( CurrentGoal.DeepClone() );
-            Environment.Goals.Remove( CurrentGoal );
+            Goals.Add( CurrentGoal.DeepClone() );
+            Goals.Remove( CurrentGoal );
         }
+        GoalMutex.ReleaseMutex();
 
     }
 
@@ -1124,11 +1171,35 @@ public class Driver : ObjectBase
     public Goal GetNextGoal()
     {
         // If there are no goals, return null
-        if ( Environment.Goals.Count == 0 )
+        if ( Goals.Count == 0 )
         { return null; }
 
         // Return the next goal
-        return Environment.Goals[ 0 ];
+        return Goals[ 0 ];
+    }
+
+
+
+    /// <summary>
+    /// Looks around the environment for goals.
+    /// </summary>
+    public void LookForGoals()
+    {
+        // Get the mutex
+        GoalMutex.WaitOne();
+
+        // Intialize the goals list
+        Goals = new List<Goal>();
+
+        // Loop through all the goals in the environment
+        foreach( Goal CurrentGoal in Environment.Goals )
+        {
+            // Add the goal to the list of goals
+            Goals.Add( new Goal( CurrentGoal ) );
+        }
+
+        // Release the mutex
+        GoalMutex.ReleaseMutex();
     }
 
 
@@ -1138,10 +1209,6 @@ public class Driver : ObjectBase
     /// </summary>
     public void LookForObstacles()
     {
-        // ***** FIX ME *****
-        // For now just add all the obstacles and robots
-        // This gives the driver perfect knowledge of the entire environment
-
         // Get the mutex
         ObstacleMutex.WaitOne();
 
