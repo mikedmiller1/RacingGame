@@ -36,12 +36,32 @@ public class TestCarControl : MonoBehaviour
                 uiBrake = control;
                 uiBrake.value = 0;
             }
+            else if (control.name == "MaximumVelocityAttribute")
+            {
+                uiMaximumVelocityAttribute = control;
+                uiMaximumVelocityAttribute.value = MaximumVelocityIndex;
+            }
+            else if (control.name == "AccelerationAttribute")
+            {
+                uiAccelerationAttribute = control;
+                uiAccelerationAttribute.value = AccelerationIndex;
+            }
+            else if (control.name == "BrakingAttribute")
+            {
+                uiBrakingAttribute = control;
+                uiBrakingAttribute.value = BrakingIndex;
+            }
+            else if (control.name == "HandlingAttribute")
+            {
+                uiHandlingAttribute = control;
+                uiHandlingAttribute.value = HandlingIndex;
+            }
         }
     }
 
     float GetAccelerationConstant(int index)
     {
-        var baseAcceleration = 0.005f;
+        var baseAcceleration = 0.005f; // m/s/s
         switch (index) {
             case 0: return baseAcceleration;
             case 1: return baseAcceleration * 1.5f;
@@ -52,9 +72,22 @@ public class TestCarControl : MonoBehaviour
         }
     }
 
+    float GetBrakingConstant(int index)
+    {
+        var baseBraking = 0.015f; // m/s/s
+        switch (index) {
+            case 0: return baseBraking;
+            case 1: return baseBraking * 1.5f;
+            case 2: return baseBraking * 2.25f;
+            case 3: return baseBraking * 3.375f;
+            case 4: return baseBraking * 5.0625f;
+            default: return baseBraking * 7.59375f;
+        }
+    }
+
     float GetMaximumVelocity(int index)
     {
-        var baseMaximumVelocity = 100f; // m/s
+        var baseMaximumVelocity = 0.05f; // m/s
         switch (index) {
             case 0: return baseMaximumVelocity;
             case 1: return baseMaximumVelocity * 1.5f;
@@ -65,6 +98,19 @@ public class TestCarControl : MonoBehaviour
         }
     }
 
+    float GetHandlingConstant(int index)
+    {
+        var baseHandling = 12f; // degrees / s
+        switch (index) {
+            case 0: return baseHandling;
+            case 1: return baseHandling * 1.5f;
+            case 2: return baseHandling * 2.25f;
+            case 3: return baseHandling * 3.375f;
+            case 4: return baseHandling * 5.0625f;
+            default: return baseHandling * 7.59375f;
+        }
+    }
+
     void FixedUpdate()
     {
         var acceleratorInput = Input.GetAxis("Vertical");
@@ -72,29 +118,73 @@ public class TestCarControl : MonoBehaviour
 
         acceleration = transform.up;
 
-//        if (acceleratorInput)
-//        {
-            acceleration *= GetAccelerationConstant(AccelerationIndex) * acceleratorInput;
-//        }
+        acceleration *= GetAccelerationConstant(AccelerationIndex) * acceleratorInput;
 
         if (!Mathf.Approximately(steeringInput, 0))
         {
-            acceleration += Quaternion.Euler(0, 0, -Mathf.Sign(steeringInput) * 12f) * acceleration;
-
-//            acceleration = Quaternion.Euler(0, 0, Mathf.Sign(steeringInput) * 45f) * acceleration;
+            acceleration = Quaternion.Euler(0, 0, -Mathf.Sign(steeringInput) * GetHandlingConstant(HandlingIndex)) * acceleration;
         }
+
+        velocity = Vector3.MoveTowards(transform.position, transform.position + acceleration, Time.fixedDeltaTime) - transform.position;
 
         uiAccelerator.value = Mathf.Clamp01(acceleratorInput);
         uiBrake.value = Mathf.Abs(Mathf.Clamp(acceleratorInput, -1, 0));
-        uiSteering.text = steeringInput.ToString();
+    }
+
+    void UpdateAttribute(ref int attribute, KeyCode keyIncrease, KeyCode keyDecrease)
+    {
+        int delta = 0;
+        if (Input.GetKeyDown(keyIncrease))
+        {
+            delta = 1;
+        }
+        else if (Input.GetKeyDown(keyDecrease))
+        {
+            delta = -1;
+        }
+
+        attribute = (int)Mathf.Clamp(attribute + delta, 0, 5);
+    }
+
+    void UpdateAttributes()
+    {
+        UpdateAttribute(ref MaximumVelocityIndex, KeyCode.U, KeyCode.J);
+        UpdateAttribute(ref AccelerationIndex, KeyCode.I, KeyCode.K);
+        UpdateAttribute(ref BrakingIndex, KeyCode.O, KeyCode.L);
+        UpdateAttribute(ref HandlingIndex, KeyCode.P, KeyCode.Semicolon);
+
+        uiMaximumVelocityAttribute.value = MaximumVelocityIndex;
+        uiAccelerationAttribute.value = AccelerationIndex;
+        uiBrakingAttribute.value = BrakingIndex;
+        uiHandlingAttribute.value = HandlingIndex;
     }
 
     // Update is called once per frame
     void Update()
     {
-        Debug.DrawRay(transform.position, acceleration, Color.cyan);
-        //uiSpeed.text = Time.time.ToString();
-        transform.position += Vector3.Project(acceleration, transform.up);
+        UpdateAttributes();
+        Vector3.ClampMagnitude(velocity, GetMaximumVelocity(MaximumVelocityIndex));
+
+        Debug.DrawRay(transform.position, acceleration * 1000f, Color.cyan);
+        Debug.DrawRay(transform.position, velocity * 100f, Color.magenta);
+        Debug.DrawRay(transform.position, transform.up * 10f, Color.yellow);
+
+
+        var degreesToRotate = 0f;
+        if (velocity.magnitude > 0)
+        {
+            degreesToRotate = Vector3.SignedAngle(transform.up, velocity, Vector3.forward);
+            if (Mathf.Abs(degreesToRotate) > 110f)
+            {
+                degreesToRotate = Vector3.SignedAngle(transform.up, -velocity, Vector3.forward);
+            }
+        }
+
+        uiSteering.text = degreesToRotate.ToString();
+        transform.Rotate(Vector3.forward, Mathf.Lerp(0, degreesToRotate, Time.deltaTime));
+
+        uiSpeed.text = velocity.magnitude.ToString();
+        transform.position += velocity;
     }
 
     private Text uiSpeed;
@@ -102,7 +192,13 @@ public class TestCarControl : MonoBehaviour
     private Slider uiAccelerator;
     private Slider uiBrake;
 
+    private Slider uiMaximumVelocityAttribute;
+    private Slider uiAccelerationAttribute;
+    private Slider uiBrakingAttribute;
+    private Slider uiHandlingAttribute;
+
     private Vector3 acceleration;
+    private Vector3 velocity;
 
     [SerializeField]
     private int MaximumVelocityIndex;
