@@ -1,4 +1,7 @@
-﻿/// <summary>
+﻿using UnityEngine;
+
+
+/// <summary>
 /// A circular obstacle in the environment.
 /// </summary>
 public class Obstacle : ObjectBase
@@ -13,6 +16,18 @@ public class Obstacle : ObjectBase
     /// <param name="Radius">The radius of the obstacle.</param>
     public Obstacle( double PositionX, double PositionY, double Radius )
         : base( PositionX, PositionY, Radius )
+    {
+    }
+
+
+
+    /// <summary>
+    /// Creates a new goal.
+    /// </summary>
+    /// <param name="Position">The position of hte goal.</param>
+    /// <param name="Radius">The radius of the goal.</param>
+    public Obstacle( Vector3 Position, double Radius )
+        : base( Position.x, Position.z, Radius )
     {
     }
 
