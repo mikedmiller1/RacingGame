@@ -27,7 +27,7 @@ public class Obstacle : ObjectBase
     /// <param name="Position">The position of hte goal.</param>
     /// <param name="Radius">The radius of the goal.</param>
     public Obstacle( Vector3 Position, double Radius )
-        : base( Position.x, Position.z, Radius )
+        : base( Position.x, Position.y, Radius )
     {
     }
 

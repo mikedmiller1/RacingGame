@@ -94,17 +94,17 @@ public class GameController : MonoBehaviour
 
         // Define a list of waypoint coordiantes
         List<Vector3> WaypointCoordinatesList = new List<Vector3>();
-        WaypointCoordinatesList.Add( new Vector3( 10, 0, 0 ) );
-        WaypointCoordinatesList.Add( new Vector3( 0, 0, 10 ) );
-        WaypointCoordinatesList.Add( new Vector3( -10, 0, 0 ) );
-        WaypointCoordinatesList.Add( new Vector3( 0, 0, -10 ) );
+        WaypointCoordinatesList.Add( new Vector3( 10, 10, 0 ) );
+        WaypointCoordinatesList.Add( new Vector3( -10, 10, 0 ) );
+        WaypointCoordinatesList.Add( new Vector3( -10, -10, 0 ) );
+        WaypointCoordinatesList.Add( new Vector3( 10, -10, 0 ) );
 
         // Define a list of obstacles
         List<Vector3> ObstacleCoordinatesList = new List<Vector3>();
-        ObstacleCoordinatesList.Add( new Vector3( 4, 0, 5 ) );
-        ObstacleCoordinatesList.Add( new Vector3( 5, 0, 10 ) );
-        ObstacleCoordinatesList.Add( new Vector3( -10, 0, -5 ) );
-        ObstacleCoordinatesList.Add( new Vector3( -5, 0, -10 ) );
+        ObstacleCoordinatesList.Add( new Vector3( 10, 4, 0 ) );
+        ObstacleCoordinatesList.Add( new Vector3( 10, -4, 0 ) );
+        ObstacleCoordinatesList.Add( new Vector3( -10, -5, 0 ) );
+        ObstacleCoordinatesList.Add( new Vector3( -5, -10, 0 ) );
 
 
         // Populate the waypoints
@@ -112,7 +112,7 @@ public class GameController : MonoBehaviour
         {
             // Create the waypoint in the UI environment
             GameObject NewWaypoint = Instantiate( WaypointPrefab, CurrentWaypoint, Quaternion.identity );
-            NewWaypoint.transform.localScale = new Vector3( GoalRadius, GoalRadius, GoalRadius );
+            NewWaypoint.transform.localScale = new Vector3( GoalRadius, GoalRadius, 0 );
             Waypoints.Add( NewWaypoint );
 
             // Add the waypoint as a goal in the AI environment
@@ -125,7 +125,7 @@ public class GameController : MonoBehaviour
         {
             // Create the obstacle in the UI environment
             GameObject NewObstacle = Instantiate( ObstaclePrefab, CurrentObstacle, Quaternion.identity );
-            NewObstacle.transform.localScale = new Vector3( ObstacleRadius, ObstacleRadius, ObstacleRadius );
+            NewObstacle.transform.localScale = new Vector3( ObstacleRadius, ObstacleRadius, 0 );
             Obstacles.Add( NewObstacle );
 
             // Add the obstacle in the AI environment

@@ -73,8 +73,8 @@ public class PlayerController : MonoBehaviour {
             {
                 foreach( Segment CurrentSegment in CurrentPath.Segments )
                 {
-                    Vector3 Start = new Vector3( (float)CurrentSegment.X, 0, (float)CurrentSegment.Y);
-                    Vector3 End = new Vector3( (float)CurrentSegment.X2, 0, (float)CurrentSegment.Y2 );
+                    Vector3 Start = new Vector3( (float)CurrentSegment.X, (float)CurrentSegment.Y, 0 );
+                    Vector3 End = new Vector3( (float)CurrentSegment.X2, (float)CurrentSegment.Y2, 0 );
                     Debug.DrawLine( Start, End, Color.gray, Time.deltaTime, false );
                 }
             }
@@ -82,8 +82,8 @@ public class PlayerController : MonoBehaviour {
             // Draw the current best path in red
             foreach( Segment CurrentSegment in AiDriver.CurrentBestPath.Segments )
             {
-                Vector3 Start = new Vector3( (float)CurrentSegment.X, 0, (float)CurrentSegment.Y);
-                Vector3 End = new Vector3( (float)CurrentSegment.X2, 0, (float)CurrentSegment.Y2 );
+                Vector3 Start = new Vector3( (float)CurrentSegment.X, (float)CurrentSegment.Y, 0 );
+                Vector3 End = new Vector3( (float)CurrentSegment.X2, (float)CurrentSegment.Y2, 0 );
                 Debug.DrawLine( Start, End, Color.red, Time.deltaTime, false );
             }
         }
@@ -107,7 +107,7 @@ public class PlayerController : MonoBehaviour {
 
             // Assign the destination
             Destination.x = (float)AiDriver.X;
-            Destination.z = (float)AiDriver.Y;
+            Destination.y = (float)AiDriver.Y;
         }
 
         
