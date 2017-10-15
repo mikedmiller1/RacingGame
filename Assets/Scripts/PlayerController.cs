@@ -89,28 +89,24 @@ public class PlayerController : MonoBehaviour {
         }
 
 
+        // Perform navigation
+        AiDriver.Navigate();
+
+        // Assign the destination
+        Destination.x = (float)AiDriver.X;
+        Destination.y = (float)AiDriver.Y;
+
+
         // Get the distance from the current position to the destination
         Vector3 Towards = Destination - transform.position;
         float RemainingDistance = Towards.magnitude;
+        Quaternion TowardsRotation = Quaternion.LookRotation( Towards );
 
-        // If we are not at the destination
-        if( RemainingDistance > ArriveRadius )
-        {
-            // Move towards the destination
-            MoveTo( Destination );
-        }
+        // Rotate to the destination
+        transform.rotation = Quaternion.Lerp( transform.rotation, TowardsRotation, Time.deltaTime * 10 );
 
-        else
-        {
-            // Perform navigation
-            AiDriver.Navigate();
-
-            // Assign the destination
-            Destination.x = (float)AiDriver.X;
-            Destination.y = (float)AiDriver.Y;
-        }
-
-        
+        // Move the player
+        transform.position = new Vector3( (float)AiDriver.X, (float)AiDriver.Y, 0 );
     }
 
     #endregion
@@ -125,15 +121,7 @@ public class PlayerController : MonoBehaviour {
     /// <param name="Destination">The location to move to.</param>
     public void MoveTo( Vector3 Destination )
     {
-        // Get a vector from the current position to the destination
-        Vector3 Towards = Destination - transform.position;
-        Quaternion TowardsRotation = Quaternion.LookRotation( Towards );
-
-        // Rotate to the destination
-        transform.rotation = Quaternion.Lerp( transform.rotation, TowardsRotation, Time.deltaTime * 10 );
-
-        // Move the player
-        transform.position = new Vector3( (float)AiDriver.X, (float)AiDriver.Y, 0 );
+        
     }
 
     #endregion

@@ -501,6 +501,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7283d56e06475d4e94eed948f0f359f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Name: 
   MaxSpeed: 0.2
   Destination: {x: 0, y: 0, z: 0}
   ArriveRadius: 1
