@@ -7,14 +7,6 @@ public class PlayerController : MonoBehaviour {
     #region Properties
 
     /// <summary>
-    /// Reference to the rigid body.
-    /// </summary>
-    [SerializeField]
-    private Rigidbody rb;
-
-
-
-    /// <summary>
     /// Maximum speed of the player.
     /// </summary>
     public float MaxSpeed;
@@ -130,28 +122,10 @@ public class PlayerController : MonoBehaviour {
         Quaternion TowardsRotation = Quaternion.LookRotation( Towards );
 
         // Rotate to the destination
-        transform.rotation = Quaternion.Lerp( transform.rotation, TowardsRotation, Time.deltaTime * 8 );
-
-        /*
-        // If the movement would exceed the maximum speed allowed
-        if ( Towards.magnitude > MaxSpeed )
-        {
-            // Normalize to a unit vector
-            Towards.Normalize();
-
-            // Move at the maximum speed
-            Towards *= MaxSpeed;
-        }
-        */
-
-        // Normalize to a unit vector
-        Towards.Normalize();
-
-        // Move at the maximum speed
-        Towards *= MaxSpeed;
+        transform.rotation = Quaternion.Lerp( transform.rotation, TowardsRotation, Time.deltaTime * 10 );
 
         // Move the player
-        rb.velocity = Towards;
+        transform.position = new Vector3( (float)AiDriver.X, (float)AiDriver.Y, 0 );
     }
 
     #endregion

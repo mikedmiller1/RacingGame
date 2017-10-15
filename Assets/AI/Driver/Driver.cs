@@ -76,7 +76,7 @@ public class Driver : ObjectBase
 
     private double _Speed = 0.1;
     /// <summary>
-    /// The speed of the driver, in meters per time-step.
+    /// The speed of the driver, in units per time-step.
     /// </summary>
     public double Speed
     {
@@ -305,7 +305,7 @@ public class Driver : ObjectBase
 
 
 
-    private double _InterferenceWeight = 1;
+    private double _InterferenceWeight = 5;
     /// <summary>
     /// The weight of the interference exponent in the evaluation function.
     /// </summary>

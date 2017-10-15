@@ -141,7 +141,7 @@ public class GameController : MonoBehaviour
             // Calculate the initial position
             Vector3 StartPosition = new Vector3( PlayerNum * 2.5f, 0, 0 );
 
-            // Create the player
+            // Create the driver in the UI environment
             Players.Add( Instantiate( PlayerPrefab, StartPosition, Quaternion.identity ) );
         }
 
@@ -149,10 +149,16 @@ public class GameController : MonoBehaviour
         foreach( GameObject Player in Players )
         {
             // Create a new driver
-            Player.GetComponent<PlayerController>().AiDriver = new Driver( Environment, Player.transform.position.x, Player.transform.position.y, 0 );
-            Player.GetComponent<PlayerController>().AiDriver.ShouldCheckDirectPath = Player.GetComponent<PlayerController>().CheckDirectPath;
-            Player.GetComponent<PlayerController>().AiDriver.Speed = Player.GetComponent<PlayerController>().MaxSpeed;
+            Driver NewDriver = new Driver( Environment, Player.transform.position.x, Player.transform.position.y, 1 )
+            {
+                ShouldCheckDirectPath = Player.GetComponent<PlayerController>().CheckDirectPath,
+                Speed = Player.GetComponent<PlayerController>().MaxSpeed
+            };
+            Player.GetComponent<PlayerController>().AiDriver = NewDriver;
             Player.GetComponent<PlayerController>().ArriveRadius = GoalRadius;
+
+            // Add the driver in the AI environment
+            Environment.Drivers.Add( NewDriver );
         }
 
 
