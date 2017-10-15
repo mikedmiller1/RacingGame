@@ -52,10 +52,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7283d56e06475d4e94eed948f0f359f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Name: 
   MaxSpeed: 5
   Destination: {x: 0, y: 0, z: 0}
   ArriveRadius: 0
-  Debugging: 1
+  ShowCurrentPath: 0
+  ShowAllPaths: 0
   CheckDirectPath: 0
 --- !u!212 &212625750600180558
 SpriteRenderer:

@@ -505,8 +505,9 @@ MonoBehaviour:
   MaxSpeed: 0.2
   Destination: {x: 0, y: 0, z: 0}
   ArriveRadius: 1
-  Debugging: 1
-  CheckDirectPath: 0
+  ShowCurrentPath: 1
+  ShowAllPaths: 0
+  CheckDirectPath: 1
 --- !u!136 &136066251621812358
 CapsuleCollider:
   m_ObjectHideFlags: 1

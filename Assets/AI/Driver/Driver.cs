@@ -74,7 +74,7 @@ public class Driver : ObjectBase
 
 
 
-    private int _PlanInterval = 1;
+    private int _PlanInterval = 10;
     /// <summary>
     /// The interval between planning iterations, in milliseconds.
     /// </summary>
@@ -308,7 +308,7 @@ public class Driver : ObjectBase
 
 
 
-    private double _SafeDistance = 1;
+    private double _SafeDistance = 0.2;
     /// <summary>
     /// A "safe" distance around obstacles when evaluating the clear metric.
     /// </summary>
@@ -1111,6 +1111,7 @@ public class Driver : ObjectBase
         double NewX = X + MoveVector.I;
         double NewY = Y + MoveVector.J;
 
+        /*
         // Check if the new position is infeasible
         // Loop through each obstacle
         ObstacleMutex.WaitOne();
@@ -1125,7 +1126,7 @@ public class Driver : ObjectBase
             }
         }
         ObstacleMutex.ReleaseMutex();
-
+        */
 
         // Move the driver
         X = NewX;

@@ -303,7 +303,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b7022ec9521c54ea06c0ab54cfef28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NumberOfPlayers: 4
+  NumberOfPlayers: 3
   PlayerPrefab: {fileID: 1926740901786316, guid: 794a0e05d4de30e41bc754561e311c76,
     type: 2}
   WaypointPrefab: {fileID: 1587885144617138, guid: e771835dd38c09d4fa12e32e04ca51bc,

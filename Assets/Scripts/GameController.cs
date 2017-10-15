@@ -147,7 +147,7 @@ public class GameController : MonoBehaviour
 
             // Create a new driver AI
             string DriverName = "Player " + PlayerNum.ToString();
-            Driver NewDriverAI = new Driver( DriverName, Environment, NewDriver.transform.position.x, NewDriver.transform.position.y, 1 )
+            Driver NewDriverAI = new Driver( DriverName, Environment, NewDriver.transform.position.x, NewDriver.transform.position.y, 0.5 )
             {
                 ShouldCheckDirectPath = NewDriver.GetComponent<PlayerController>().CheckDirectPath,
                 Speed = NewDriver.GetComponent<PlayerController>().MaxSpeed

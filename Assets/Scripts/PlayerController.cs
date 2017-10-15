@@ -45,9 +45,16 @@ public class PlayerController : MonoBehaviour {
 
 
     /// <summary>
-    /// Flag to control extra debug information.
+    /// Flag to control showing the current path.
     /// </summary>
-    public bool Debugging;
+    public bool ShowCurrentPath;
+
+
+
+    /// <summary>
+    /// Flag to control showing all paths.
+    /// </summary>
+    public bool ShowAllPaths;
 
 
 
@@ -65,8 +72,8 @@ public class PlayerController : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        // Check for debugging
-        if( Debugging )
+        // Check if all paths should be drawn
+        if( ShowAllPaths )
         {
             // Draw all the paths in grey
             foreach( Path CurrentPath in AiDriver.Paths )
@@ -78,7 +85,11 @@ public class PlayerController : MonoBehaviour {
                     Debug.DrawLine( Start, End, Color.gray, Time.deltaTime, false );
                 }
             }
+        }
 
+        // Check if the current path should be drawn
+        if( ShowCurrentPath )
+        {
             // Draw the current best path in red
             foreach( Segment CurrentSegment in AiDriver.CurrentBestPath.Segments )
             {
