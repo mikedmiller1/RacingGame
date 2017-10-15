@@ -15,13 +15,17 @@ public class Driver : ObjectBase
     /// <summary>
     /// Creates a new driver.
     /// </summary>
+    /// <param name="Name">The name of the driver.</param>
     /// <param name="Environment">The environment of the driver.</param>
     /// <param name="PositionX">The X position of the driver.</param>
     /// <param name="PositionY">The Y position of the driver.</param>
     /// <param name="Radius">The radius of the driver.</param>
-    public Driver( Environment Environment, double PositionX, double PositionY, double Radius )
+    public Driver( string Name, Environment Environment, double PositionX, double PositionY, double Radius )
         : base( PositionX, PositionY, Radius )
     {
+        // Set the name
+        this._Name = Name;
+
         // Set the environment reference
         this.Environment = Environment;
 
@@ -41,6 +45,17 @@ public class Driver : ObjectBase
 
 
     #region Driver Properties
+
+    private string _Name;
+    /// <summary>
+    /// The name of the driver.
+    /// </summary>
+    public string Name
+    {
+        get { return _Name; }
+    }
+
+
 
     /// <summary>
     /// Reference to the environment.
@@ -395,7 +410,7 @@ public class Driver : ObjectBase
 
     /// <summary>
     /// Attempts to move the driver from it's current position to the nearest goal using the current best path.
-    /// Avoids obstacles and other robots.
+    /// Avoids obstacles and other drivers.
     /// </summary>
     public void Navigate()
     {
@@ -408,18 +423,6 @@ public class Driver : ObjectBase
             // Check if a knot or goal has been reached
             CheckPosition();
         }
-    }
-
-
-
-    /// <summary>
-    /// Attempts to move the driver from it's current position to the nearest goal using the current best path.
-    /// Avoids obstacles and other robots.
-    /// Method call for the timer trigger.
-    /// </summary>
-    public void Navigate( object sender, ElapsedEventArgs e )
-    {
-        Navigate();
     }
 
 

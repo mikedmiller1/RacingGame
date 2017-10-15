@@ -7,6 +7,14 @@ public class PlayerController : MonoBehaviour {
     #region Properties
 
     /// <summary>
+    /// The name of the driver.
+    /// </summary>
+    [HideInInspector]
+    public string Name;
+
+
+
+    /// <summary>
     /// Maximum speed of the player.
     /// </summary>
     public float MaxSpeed;

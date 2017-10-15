@@ -134,7 +134,7 @@ public class GameController : MonoBehaviour
         
 
 
-        // Create the AI drivers
+        // Create the driver game objects
         Players = new List<GameObject>();
         for( int PlayerNum = 0; PlayerNum < NumberOfPlayers; PlayerNum++ )
         {
@@ -142,23 +142,21 @@ public class GameController : MonoBehaviour
             Vector3 StartPosition = new Vector3( PlayerNum * 2.5f, 0, 0 );
 
             // Create the driver in the UI environment
-            Players.Add( Instantiate( PlayerPrefab, StartPosition, Quaternion.identity ) );
-        }
+            GameObject NewDriver = Instantiate( PlayerPrefab, StartPosition, Quaternion.identity );
+            Players.Add( NewDriver );
 
-        // Initialize the AI drivers
-        foreach( GameObject Player in Players )
-        {
-            // Create a new driver
-            Driver NewDriver = new Driver( Environment, Player.transform.position.x, Player.transform.position.y, 1 )
+            // Create a new driver AI
+            string DriverName = "Player " + PlayerNum.ToString();
+            Driver NewDriverAI = new Driver( DriverName, Environment, NewDriver.transform.position.x, NewDriver.transform.position.y, 1 )
             {
-                ShouldCheckDirectPath = Player.GetComponent<PlayerController>().CheckDirectPath,
-                Speed = Player.GetComponent<PlayerController>().MaxSpeed
+                ShouldCheckDirectPath = NewDriver.GetComponent<PlayerController>().CheckDirectPath,
+                Speed = NewDriver.GetComponent<PlayerController>().MaxSpeed
             };
-            Player.GetComponent<PlayerController>().AiDriver = NewDriver;
-            Player.GetComponent<PlayerController>().ArriveRadius = GoalRadius;
+            NewDriver.GetComponent<PlayerController>().AiDriver = NewDriverAI;
+            NewDriver.GetComponent<PlayerController>().ArriveRadius = GoalRadius;
 
             // Add the driver in the AI environment
-            Environment.Drivers.Add( NewDriver );
+            Environment.Drivers.Add( NewDriverAI );
         }
 
 
