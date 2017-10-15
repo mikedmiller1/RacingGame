@@ -920,6 +920,7 @@ public class Driver : ObjectBase
                     if ( CurrentMinDistance >= SafeDistance )
                     {
                         // Nothing to repair
+                        ObstacleMutex.ReleaseMutex();
                         return;
                     }
 
@@ -1026,6 +1027,9 @@ public class Driver : ObjectBase
             Paths[ PathIndex ] = NewPath;
         }
 
+        // Replace the worst path with the new path
+        //Paths[ NumberOfPaths - 1 ] = NewPath;
+
         // Sort the paths by cost, from lowest to highest
         Paths.Sort();
         PathMutex.ReleaseMutex();
@@ -1113,6 +1117,7 @@ public class Driver : ObjectBase
             if ( MathUtilities.IsWithin( new ObjectBase( NewX, NewY, 0 ), CurrentObstacle ) )
             {
                 // Abort the move
+                ObstacleMutex.ReleaseMutex();
                 return;
             }
         }

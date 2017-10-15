@@ -89,7 +89,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         // Initialize the AI driver environment
-        Environment = new Environment( -10, 10, -10, 10 );
+        Environment = new Environment( -13, 13, -13, 13 );
 
 
         // Define a list of waypoint coordiantes
@@ -101,8 +101,8 @@ public class GameController : MonoBehaviour
 
         // Define a list of obstacles
         List<Vector3> ObstacleCoordinatesList = new List<Vector3>();
-        ObstacleCoordinatesList.Add( new Vector3( 10, 4, 0 ) );
-        ObstacleCoordinatesList.Add( new Vector3( 10, -4, 0 ) );
+        ObstacleCoordinatesList.Add( new Vector3( 4, 11, 0 ) );
+        ObstacleCoordinatesList.Add( new Vector3( -4, 9, 0 ) );
         ObstacleCoordinatesList.Add( new Vector3( -10, -5, 0 ) );
         ObstacleCoordinatesList.Add( new Vector3( -5, -10, 0 ) );
 
@@ -119,7 +119,7 @@ public class GameController : MonoBehaviour
             Environment.Goals.Add( new Goal( CurrentWaypoint, GoalRadius ) );
         }
         
-        /*
+        
         // Populate the obstacles
         foreach( Vector3 CurrentObstacle in ObstacleCoordinatesList )
         {
@@ -129,9 +129,9 @@ public class GameController : MonoBehaviour
             Obstacles.Add( NewObstacle );
 
             // Add the obstacle in the AI environment
-            //Environment.Obstacles.Add( new Obstacle( CurrentObstacle, ObstacleRadius ) );
+            Environment.Obstacles.Add( new Obstacle( CurrentObstacle, ObstacleRadius ) );
         }
-        */
+        
 
 
         // Create the AI drivers
@@ -149,7 +149,7 @@ public class GameController : MonoBehaviour
         foreach( GameObject Player in Players )
         {
             // Create a new driver
-            Player.GetComponent<PlayerController>().AiDriver = new Driver( Environment, Player.transform.position.x, Player.transform.position.z, 0.5 );
+            Player.GetComponent<PlayerController>().AiDriver = new Driver( Environment, Player.transform.position.x, Player.transform.position.y, 0 );
             Player.GetComponent<PlayerController>().AiDriver.ShouldCheckDirectPath = Player.GetComponent<PlayerController>().CheckDirectPath;
             Player.GetComponent<PlayerController>().AiDriver.Speed = Player.GetComponent<PlayerController>().MaxSpeed;
             Player.GetComponent<PlayerController>().ArriveRadius = GoalRadius;
