@@ -8,6 +8,7 @@ public class TestCarControl : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        animator_ = GetComponent<Animator>();
         rigidBody_ = GetComponent<Rigidbody2D>();
         contacts_ = new ContactPoint2D[1];
         var textControls = GameObject.Find("UICanvas").GetComponentsInChildren<Text>();
@@ -246,6 +247,8 @@ public class TestCarControl : MonoBehaviour
 
         uiSpeed.text = velocity_.magnitude.ToString();
         transform.position += velocity_;
+
+        animator_.SetFloat("speed", velocity_.magnitude);
     }
 
     void OnCollisionEnter2D(Collision2D other)
@@ -267,6 +270,8 @@ public class TestCarControl : MonoBehaviour
 
     private Vector3 acceleration_;
     private Vector3 velocity_;
+
+    private Animator animator_;
 
     private Rigidbody2D rigidBody_;
     private ContactPoint2D[] contacts_;
