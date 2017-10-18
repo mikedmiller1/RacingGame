@@ -8,12 +8,9 @@ public class ColliderScaler : MonoBehaviour
     void Start ()
     {
         var renderer = GetComponent<SpriteRenderer>();
-        print(renderer.size);
         foreach (var collider in GetComponents<BoxCollider2D>())
         {
-            print("collider " + collider.size);
             collider.size = new Vector2(renderer.size.x, collider.size.y);
-            print("collider " + collider.size);
         }
     }
 
