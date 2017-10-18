@@ -2,15 +2,15 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Track : MonoBehaviour
+public class ColliderScaler : MonoBehaviour
 {
     // Use this for initialization
     void Start ()
     {
-        var waypoints = GetComponentsInChildren<Waypoint>();
-        foreach (var waypoint in waypoints)
+        var renderer = GetComponent<SpriteRenderer>();
+        foreach (var collider in GetComponents<BoxCollider2D>())
         {
-            print(waypoint.GetPosition());
+            collider.size = new Vector2(renderer.size.x, collider.size.y);
         }
     }
 
