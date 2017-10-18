@@ -10,7 +10,6 @@ public class Track : MonoBehaviour
         var waypoints = GetComponentsInChildren<Waypoint>();
         foreach (var waypoint in waypoints)
         {
-            print(waypoint.GetPosition());
         }
     }
 

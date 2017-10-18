@@ -8,6 +8,8 @@ public class TestCarControl : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        rigidBody_ = GetComponent<Rigidbody2D>();
+        contacts_ = new ContactPoint2D[1];
         var textControls = GameObject.Find("UICanvas").GetComponentsInChildren<Text>();
         foreach (var control in textControls)
         {
@@ -101,7 +103,7 @@ public class TestCarControl : MonoBehaviour
 
     float GetMaximumVelocity(int index)
     {
-        var baseMaximumVelocity = 0.01f; // m/s
+        var baseMaximumVelocity = 0.05f; // m/s
         switch (index)
         {
         case 0:
@@ -144,23 +146,23 @@ public class TestCarControl : MonoBehaviour
         var acceleratorInput = Input.GetAxis("Vertical");
         var steeringInput = Input.GetAxis("Horizontal");
 
-        //acceleration = transform.up * GetAccelerationConstant(AccelerationIndex) * acceleratorInput;
-        acceleration = transform.up * (acceleratorInput > 0 ? acceleratorInput : coast);
+        //acceleration_ = transform.up * GetAccelerationConstant(AccelerationIndex) * acceleratorInput;
+        acceleration_ = transform.up * (acceleratorInput > 0 ? acceleratorInput : coast_);
 
         if (!Mathf.Approximately(steeringInput, 0))
         {
-            acceleration = Quaternion.Euler(0, 0, -Mathf.Sign(steeringInput) * GetHandlingConstant(HandlingIndex)) * acceleration;
+            acceleration_ = Quaternion.Euler(0, 0, -Mathf.Sign(steeringInput) * GetHandlingConstant(HandlingIndex)) * acceleration_;
         }
 
-        //velocity = Vector3.MoveTowards(transform.position, transform.position + acceleration, Time.fixedDeltaTime) - transform.position;
-        //velocity = acceleration.normalized * Time.fixedDeltaTime;
+        //velocity_ = Vector3.MoveTowards(transform.position, transform.position + acceleration_, Time.fixedDeltaTime) - transform.position;
+        //velocity_ = acceleration_.normalized * Time.fixedDeltaTime;
         if (acceleratorInput > 0)
         {
-            coast = 1;
-            velocity = Vector3.Lerp(transform.up, acceleration.normalized, GetAccelerationConstant(AccelerationIndex));
-            velocity = Vector3.ClampMagnitude(velocity, GetMaximumVelocity(MaximumVelocityIndex));
+            coast_ = 1;
+            velocity_ = Vector3.Lerp(transform.up, acceleration_.normalized, GetAccelerationConstant(AccelerationIndex));
+            velocity_ = Vector3.ClampMagnitude(velocity_, GetMaximumVelocity(MaximumVelocityIndex));
         }
-        else if (coast > 0)
+        else if (coast_ > 0)
         {
             var slowFactor = 0.01f;
             if (acceleratorInput < 0)
@@ -168,14 +170,14 @@ public class TestCarControl : MonoBehaviour
                 slowFactor *= GetBrakingMultiplier(BrakingIndex);
             }
 
-            coast -= slowFactor * Time.fixedDeltaTime;
-            coast = Mathf.Clamp01(coast);
+            coast_ -= slowFactor * Time.fixedDeltaTime;
+            coast_ = Mathf.Clamp01(coast_);
 
-            velocity = Vector3.Lerp(Vector3.zero, velocity, coast);
-            if (velocity.magnitude < 1e-4f)
+            velocity_ = Vector3.Lerp(Vector3.zero, velocity_, coast_);
+            if (velocity_.magnitude < 1e-4f)
             {
-                velocity = Vector3.zero;
-                coast = 0;
+                velocity_ = Vector3.zero;
+                coast_ = 0;
             }
         }
 
@@ -221,25 +223,36 @@ public class TestCarControl : MonoBehaviour
             transform.position = Vector3.zero;
         }
 
-        Debug.DrawRay(transform.position, acceleration * 1000f, Color.cyan);
-        Debug.DrawRay(transform.position, velocity * 100f, Color.magenta);
+        Debug.DrawRay(transform.position, acceleration_ * 1000f, Color.cyan);
+        Debug.DrawRay(transform.position, velocity_ * 100f, Color.magenta);
         Debug.DrawRay(transform.position, transform.up * 10f, Color.yellow);
 
         var degreesToRotate = 0f;
-        if (velocity.magnitude > 0)
+        if (velocity_.magnitude > 0.1f)
         {
-            degreesToRotate = Vector3.SignedAngle(transform.up, velocity, Vector3.forward);
+            degreesToRotate = Vector3.SignedAngle(transform.up, velocity_, Vector3.forward);
             if (Mathf.Abs(degreesToRotate) > 110f)
             {
-                degreesToRotate = Vector3.SignedAngle(transform.up, -velocity, Vector3.forward);
+                degreesToRotate = Vector3.SignedAngle(transform.up, -velocity_, Vector3.forward);
             }
+        }
+        else
+        {
+            degreesToRotate = 12f * GetHandlingConstant(HandlingIndex) * -Input.GetAxis("Horizontal");
         }
 
         uiSteering.text = degreesToRotate.ToString();
         transform.Rotate(Vector3.forward, Mathf.Lerp(0, degreesToRotate, Time.deltaTime));
 
-        uiSpeed.text = velocity.magnitude.ToString();
-        transform.position += velocity;
+        uiSpeed.text = velocity_.magnitude.ToString();
+        transform.position += velocity_;
+    }
+
+    void OnCollisionEnter2D(Collision2D other)
+    {
+        // TODO: Upgrade? other.GetContacts(contacts_);
+        velocity_ = Vector3.Reflect(velocity_, other.contacts[0].normal);
+        acceleration_ = Vector3.zero;
     }
 
     private Text uiSpeed;
@@ -252,10 +265,13 @@ public class TestCarControl : MonoBehaviour
     private Slider uiBrakingAttribute;
     private Slider uiHandlingAttribute;
 
-    private Vector3 acceleration;
-    private Vector3 velocity;
+    private Vector3 acceleration_;
+    private Vector3 velocity_;
 
-    private float coast;
+    private Rigidbody2D rigidBody_;
+    private ContactPoint2D[] contacts_;
+
+    private float coast_;
 
     [SerializeField]
     private int MaximumVelocityIndex;
