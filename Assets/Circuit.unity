@@ -3062,7 +3062,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4456351802462518, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
       propertyPath: m_RootOrder
-      value: 6
+      value: 8
       objectReference: {fileID: 0}
     - target: {fileID: 1888513902288514, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
       propertyPath: m_Name
@@ -3285,6 +3285,11 @@ Prefab:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 114038441165059532, guid: 93b54b1b49f384c41847634f65a7aca2,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114222834997789416, guid: 93b54b1b49f384c41847634f65a7aca2,
         type: 2}
       propertyPath: m_Enabled
       value: 1
@@ -4316,7 +4321,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 4488361508505502, guid: 93b54b1b49f384c41847634f65a7aca2, type: 2}
       propertyPath: m_RootOrder
-      value: 5
+      value: 7
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 93b54b1b49f384c41847634f65a7aca2, type: 2}
@@ -4762,7 +4767,7 @@ Transform:
   - {fileID: 551506941}
   - {fileID: 632073969}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1163204640
 Prefab:
@@ -6039,14 +6044,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b7022ec9521c54ea06c0ab54cfef28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NumberOfPlayers: 0
-  PlayerPrefab: {fileID: 0}
-  WaypointPrefab: {fileID: 0}
+  NumberOfAIPlayers: 3
+  Track: {fileID: 1152778841}
+  PlayerPrefab: {fileID: 1129043903399840, guid: d6685a8640c5b624b81b63cf7aeb27c6,
+    type: 2}
+  WaypointPrefab: {fileID: 1613834515478130, guid: 67285761adad52c46ab001d0ed164944,
+    type: 2}
   ObstaclePrefab: {fileID: 0}
   Waypoints: []
   Obstacles: []
-  GoalRadius: 0
-  ObstacleRadius: 0
+  WaypointRadius: 0.2
+  ObstacleRadius: 2
 --- !u!4 &1660774917
 Transform:
   m_ObjectHideFlags: 0
@@ -6300,7 +6308,7 @@ RectTransform:
   m_Children:
   - {fileID: 1293262510}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}

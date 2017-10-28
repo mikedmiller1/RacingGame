@@ -10,7 +10,7 @@ public class GameController : MonoBehaviour
     /// <summary>
     /// The number of AI players.
     /// </summary>
-    public float NumberOfPlayers;
+    public float NumberOfAIPlayers;
 
 
 
@@ -25,6 +25,13 @@ public class GameController : MonoBehaviour
     /// The AI environment.
     /// </summary>
     private Environment Environment;
+
+
+
+    /// <summary>
+    /// Reference to the track.
+    /// </summary>
+    public GameObject Track;
 
 
 
@@ -53,7 +60,7 @@ public class GameController : MonoBehaviour
     /// List of waypoint objects in the environment.
     /// </summary>
     [HideInInspector]
-    public List<GameObject> Waypoints;
+    public List<GameObject> Waypoints = new List<GameObject>();
 
 
 
@@ -61,14 +68,14 @@ public class GameController : MonoBehaviour
     /// List of obstacle objects in the environment.
     /// </summary>
     [HideInInspector]
-    public List<GameObject> Obstacles;
+    public List<GameObject> Obstacles = new List<GameObject>();
 
 
 
     /// <summary>
     /// Radius within which the player has arrived at the destination.
     /// </summary>
-    public float GoalRadius;
+    public float WaypointRadius;
 
 
 
@@ -88,10 +95,25 @@ public class GameController : MonoBehaviour
     /// </summary>
     void Start()
     {
+
         // Initialize the AI driver environment
-        Environment = new Environment( -13, 13, -13, 13 );
+        Environment = new Environment( -200, 200, -200, 200 );
+
+        // Get the waypoints from the game objects around the track
+        Waypoint[] WaypointsFromTrack = Track.GetComponentsInChildren<Waypoint>();
+        foreach( Waypoint CurrentWaypoint in WaypointsFromTrack )
+        {
+            // Create the waypoint in the UI environment
+            GameObject NewWaypoint = Instantiate( WaypointPrefab, CurrentWaypoint.transform.position, Quaternion.identity );
+            NewWaypoint.transform.localScale = new Vector3( WaypointRadius, WaypointRadius, 0 );
+            Waypoints.Add( NewWaypoint );
+
+            // Add the waypoint as a goal in the AI environment
+            Environment.Goals.Add( new Goal( CurrentWaypoint.transform.position, WaypointRadius ) );
+        }
 
 
+        /*  Hard coded waypoints and obstacles for testing
         // Define a list of waypoint coordiantes
         List<Vector3> WaypointCoordinatesList = new List<Vector3>();
         WaypointCoordinatesList.Add( new Vector3( 10, 10, 0 ) );
@@ -106,17 +128,16 @@ public class GameController : MonoBehaviour
         ObstacleCoordinatesList.Add( new Vector3( -10, -5, 0 ) );
         ObstacleCoordinatesList.Add( new Vector3( -5, -10, 0 ) );
 
-
         // Populate the waypoints
         foreach( Vector3 CurrentWaypoint in WaypointCoordinatesList )
         {
             // Create the waypoint in the UI environment
             GameObject NewWaypoint = Instantiate( WaypointPrefab, CurrentWaypoint, Quaternion.identity );
-            NewWaypoint.transform.localScale = new Vector3( GoalRadius, GoalRadius, 0 );
+            NewWaypoint.transform.localScale = new Vector3( WaypointRadius, WaypointRadius, 0 );
             Waypoints.Add( NewWaypoint );
 
             // Add the waypoint as a goal in the AI environment
-            Environment.Goals.Add( new Goal( CurrentWaypoint, GoalRadius ) );
+            Environment.Goals.Add( new Goal( CurrentWaypoint, WaypointRadius ) );
         }
         
         
@@ -131,12 +152,12 @@ public class GameController : MonoBehaviour
             // Add the obstacle in the AI environment
             Environment.Obstacles.Add( new Obstacle( CurrentObstacle, ObstacleRadius ) );
         }
-        
+        */
 
 
         // Create the driver game objects
         Players = new List<GameObject>();
-        for( int PlayerNum = 0; PlayerNum < NumberOfPlayers; PlayerNum++ )
+        for( int PlayerNum = 0; PlayerNum < NumberOfAIPlayers; PlayerNum++ )
         {
             // Calculate the initial position
             Vector3 StartPosition = new Vector3( PlayerNum * 2.5f, 0, 0 );
@@ -153,7 +174,7 @@ public class GameController : MonoBehaviour
                 Speed = NewDriver.GetComponent<AIPlayerController>().MaxSpeed
             };
             NewDriver.GetComponent<AIPlayerController>().AiDriver = NewDriverAI;
-            NewDriver.GetComponent<AIPlayerController>().ArriveRadius = GoalRadius;
+            NewDriver.GetComponent<AIPlayerController>().ArriveRadius = WaypointRadius;
 
             // Add the driver in the AI environment
             Environment.Drivers.Add( NewDriverAI );

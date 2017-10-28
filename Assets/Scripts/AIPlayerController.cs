@@ -105,7 +105,7 @@ public class AIPlayerController : MonoBehaviour {
 
         // Assign the destination
         Destination.x = (float)AiDriver.X;
-        Destination.y = (float)AiDriver.Y;
+        Destination.z = (float)AiDriver.Y;
 
 
         // Get the distance from the current position to the destination
