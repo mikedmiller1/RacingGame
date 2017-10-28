@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour {
+public class AIPlayerController : MonoBehaviour {
 
     #region Properties
 

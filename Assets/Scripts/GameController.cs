@@ -149,11 +149,11 @@ public class GameController : MonoBehaviour
             string DriverName = "Player " + PlayerNum.ToString();
             Driver NewDriverAI = new Driver( DriverName, Environment, NewDriver.transform.position.x, NewDriver.transform.position.y, 0.5 )
             {
-                ShouldCheckDirectPath = NewDriver.GetComponent<PlayerController>().CheckDirectPath,
-                Speed = NewDriver.GetComponent<PlayerController>().MaxSpeed
+                ShouldCheckDirectPath = NewDriver.GetComponent<AIPlayerController>().CheckDirectPath,
+                Speed = NewDriver.GetComponent<AIPlayerController>().MaxSpeed
             };
-            NewDriver.GetComponent<PlayerController>().AiDriver = NewDriverAI;
-            NewDriver.GetComponent<PlayerController>().ArriveRadius = GoalRadius;
+            NewDriver.GetComponent<AIPlayerController>().AiDriver = NewDriverAI;
+            NewDriver.GetComponent<AIPlayerController>().ArriveRadius = GoalRadius;
 
             // Add the driver in the AI environment
             Environment.Drivers.Add( NewDriverAI );
@@ -164,9 +164,9 @@ public class GameController : MonoBehaviour
         foreach( GameObject Player in Players )
         {
             // Start the driver
-            Player.GetComponent<PlayerController>().AiDriver.PlannerActive = true;
-            Player.GetComponent<PlayerController>().AiDriver.NavigationActive = true;
-            Player.GetComponent<PlayerController>().AiDriver.RunSimulation = true;
+            Player.GetComponent<AIPlayerController>().AiDriver.PlannerActive = true;
+            Player.GetComponent<AIPlayerController>().AiDriver.NavigationActive = true;
+            Player.GetComponent<AIPlayerController>().AiDriver.RunSimulation = true;
         }
     }
 
