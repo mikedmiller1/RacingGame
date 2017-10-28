@@ -8,7 +8,7 @@ using System.Timers;
 /// Runs a real-time adaptive planning (RAMP) algorithm to reach goals.
 /// Adapts in real-time to avoid obstacles and other drivers.
 /// </summary>
-public class Driver : ObjectBase
+public class AIDriver : ObjectBase
 {
     #region Constructor
 
@@ -20,7 +20,7 @@ public class Driver : ObjectBase
     /// <param name="PositionX">The X position of the driver.</param>
     /// <param name="PositionY">The Y position of the driver.</param>
     /// <param name="Radius">The radius of the driver.</param>
-    public Driver( string Name, Environment Environment, double PositionX, double PositionY, double Radius )
+    public AIDriver( string Name, Environment Environment, double PositionX, double PositionY, double Radius )
         : base( PositionX, PositionY, Radius )
     {
         // Set the name
@@ -1235,19 +1235,25 @@ public class Driver : ObjectBase
         }
 
 
-        // Loop through all the robots in the environment
-        foreach ( ObjectBase CurrentRobot in Environment.Drivers )
+        // Loop through all the AI drivers in the environment
+        foreach ( ObjectBase CurrentAIDriver in Environment.AIDrivers )
         {
             // If the current driver is this driver, skip it
-            if ( CurrentRobot == this )
+            if ( CurrentAIDriver == this )
             { continue; }
 
             // Add the driver to the list of known obstacles
-            KnownObstacles.Add( new ObjectBase( CurrentRobot ) );
+            KnownObstacles.Add( new ObjectBase( CurrentAIDriver ) );
 
             // Add the driver radius to the obstacle
             KnownObstacles[ KnownObstacles.Count - 1 ].Radius += Radius;
         }
+
+
+        // Add the human driver to the list of known obstacles
+        KnownObstacles.Add( new ObjectBase( Environment.HumanDriver ) );
+        KnownObstacles[ KnownObstacles.Count - 1 ].Radius += Radius;
+
 
         // Release the mutex
         ObstacleMutex.ReleaseMutex();

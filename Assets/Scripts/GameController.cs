@@ -29,9 +29,16 @@ public class GameController : MonoBehaviour
 
 
     /// <summary>
-    /// Reference to the track.
+    /// Reference to the track object.
     /// </summary>
     public GameObject Track;
+
+
+
+    /// <summary>
+    /// Reference to the human player object.
+    /// </summary>
+    public GameObject HumanPlayer;
 
 
 
@@ -113,6 +120,11 @@ public class GameController : MonoBehaviour
         }
 
 
+        // Add the human player object in the AI driver environment
+        Environment.HumanDriver = new HumanDriver( HumanPlayer.transform.position.x, HumanPlayer.transform.position.z, ObstacleRadius );
+
+
+
         /*  Hard coded waypoints and obstacles for testing
         // Define a list of waypoint coordiantes
         List<Vector3> WaypointCoordinatesList = new List<Vector3>();
@@ -155,6 +167,7 @@ public class GameController : MonoBehaviour
         */
 
 
+
         // Create the driver game objects
         Players = new List<GameObject>();
         for( int PlayerNum = 0; PlayerNum < NumberOfAIPlayers; PlayerNum++ )
@@ -168,7 +181,7 @@ public class GameController : MonoBehaviour
 
             // Create a new driver AI
             string DriverName = "Player " + PlayerNum.ToString();
-            Driver NewDriverAI = new Driver( DriverName, Environment, NewDriver.transform.position.x, NewDriver.transform.position.y, 0.5 )
+            AIDriver NewDriverAI = new AIDriver( DriverName, Environment, NewDriver.transform.position.x, NewDriver.transform.position.y, ObstacleRadius )
             {
                 ShouldCheckDirectPath = NewDriver.GetComponent<AIPlayerController>().CheckDirectPath,
                 Speed = NewDriver.GetComponent<AIPlayerController>().MaxSpeed
@@ -177,7 +190,7 @@ public class GameController : MonoBehaviour
             NewDriver.GetComponent<AIPlayerController>().ArriveRadius = WaypointRadius;
 
             // Add the driver in the AI environment
-            Environment.Drivers.Add( NewDriverAI );
+            Environment.AIDrivers.Add( NewDriverAI );
         }
 
 
@@ -198,6 +211,11 @@ public class GameController : MonoBehaviour
     /// </summary>
     void Update()
     {
+        // Update the human driver position
+        Environment.HumanDriver.X = HumanPlayer.transform.position.x;
+        Environment.HumanDriver.Y = HumanPlayer.transform.position.y;
+
+
         // Check for a left mouse click
         if ( Input.GetMouseButtonDown( 0 ) )
         {

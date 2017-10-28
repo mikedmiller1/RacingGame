@@ -28,16 +28,29 @@ public class Environment
 
     #region Properties
 
-    private List<Driver> _Drivers = new List<Driver>();
+    private List<AIDriver> _AIDrivers = new List<AIDriver>();
     /// <summary>
-    /// The drivers in the environment.
+    /// The AI drivers in the environment.
     /// </summary>
-    public List<Driver> Drivers
+    public List<AIDriver> AIDrivers
     {
-        get { return _Drivers; }
+        get { return _AIDrivers; }
         set
         {
-            _Drivers = value;
+            _AIDrivers = value;
+        }
+    }
+
+
+
+    private HumanDriver _HumanDriver;
+
+    public HumanDriver HumanDriver
+    {
+        get { return _HumanDriver; }
+        set
+        {
+            _HumanDriver = value;
         }
     }
 
@@ -144,7 +157,7 @@ public class Environment
             _NavigationActive = value;
 
             // Set the value in all the drivers
-            foreach ( Driver CurrentDriver in Drivers )
+            foreach ( AIDriver CurrentDriver in AIDrivers )
             {
                 CurrentDriver.NavigationActive = value;
             }
@@ -165,7 +178,7 @@ public class Environment
             _PlannerActive = value;
 
             // Set the value in all the drivers
-            foreach ( Driver CurrentDriver in Drivers )
+            foreach ( AIDriver CurrentDriver in AIDrivers )
             {
                 CurrentDriver.PlannerActive = value;
             }
@@ -188,7 +201,7 @@ public class Environment
                 _RunSimulation = value;
 
                 // Set the value in all the robots
-                foreach ( Driver CurrentDriver in Drivers )
+                foreach ( AIDriver CurrentDriver in AIDrivers )
                 {
                     CurrentDriver.RunSimulation = value;
                 }

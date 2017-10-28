@@ -118,7 +118,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Name: 
-  MaxSpeed: 0.1
+  MaxSpeed: 0.05
   Destination: {x: 0, y: 0, z: 0}
   ArriveRadius: 0
   ShowCurrentPath: 1

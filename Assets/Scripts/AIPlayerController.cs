@@ -40,7 +40,7 @@ public class AIPlayerController : MonoBehaviour {
     /// <summary>
     /// AI driver.
     /// </summary>
-    public Driver AiDriver;
+    public AIDriver AiDriver;
 
 
 

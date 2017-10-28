@@ -4393,7 +4393,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1065643191}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -5.3, y: 4.7, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 200, y: 200, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -6044,8 +6044,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b7022ec9521c54ea06c0ab54cfef28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NumberOfAIPlayers: 3
+  NumberOfAIPlayers: 2
   Track: {fileID: 1152778841}
+  HumanPlayer: {fileID: 251421774}
   PlayerPrefab: {fileID: 1129043903399840, guid: d6685a8640c5b624b81b63cf7aeb27c6,
     type: 2}
   WaypointPrefab: {fileID: 1613834515478130, guid: 67285761adad52c46ab001d0ed164944,
@@ -6053,8 +6054,8 @@ MonoBehaviour:
   ObstaclePrefab: {fileID: 0}
   Waypoints: []
   Obstacles: []
-  WaypointRadius: 0.2
-  ObstacleRadius: 2
+  WaypointRadius: 0.5
+  ObstacleRadius: 0.3
 --- !u!4 &1660774917
 Transform:
   m_ObjectHideFlags: 0
