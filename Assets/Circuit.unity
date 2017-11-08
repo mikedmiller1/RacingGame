@@ -3083,7 +3083,14 @@ Prefab:
       propertyPath: m_Radius
       value: 0.30102968
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
+    - {fileID: 0}
   m_ParentPrefab: {fileID: 100100000, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
   m_IsPrefabParent: 0
 --- !u!1 &752504493
@@ -4323,6 +4330,21 @@ Prefab:
       propertyPath: m_RootOrder
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 61854154729962328, guid: 93b54b1b49f384c41847634f65a7aca2,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212434982919041340, guid: 93b54b1b49f384c41847634f65a7aca2,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114038441165059532, guid: 93b54b1b49f384c41847634f65a7aca2,
+        type: 2}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 93b54b1b49f384c41847634f65a7aca2, type: 2}
   m_IsPrefabParent: 0
@@ -4711,7 +4733,6 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1152778843}
-  - component: {fileID: 1152778842}
   m_Layer: 0
   m_Name: Track
   m_TagString: Untagged
@@ -4719,17 +4740,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1152778842
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1152778841}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69770beb1527a4f308b50ab794d018a4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!4 &1152778843
 Transform:
   m_ObjectHideFlags: 0
@@ -6044,18 +6054,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b7022ec9521c54ea06c0ab54cfef28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NumberOfAIPlayers: 2
+  NumberOfAIPlayers: 5
   Track: {fileID: 1152778841}
   HumanPlayer: {fileID: 251421774}
   PlayerPrefab: {fileID: 1129043903399840, guid: d6685a8640c5b624b81b63cf7aeb27c6,
     type: 2}
   WaypointPrefab: {fileID: 1613834515478130, guid: 67285761adad52c46ab001d0ed164944,
     type: 2}
-  ObstaclePrefab: {fileID: 0}
+  ObstaclePrefab: {fileID: 1587885144617138, guid: e771835dd38c09d4fa12e32e04ca51bc,
+    type: 2}
   Waypoints: []
-  Obstacles: []
   WaypointRadius: 0.5
-  ObstacleRadius: 0.3
+  VehicleObstacleRadius: 1
+  WallObstacleRadius: 1
+  UseWallObstacles: 0
+  Debugging: 1
 --- !u!4 &1660774917
 Transform:
   m_ObjectHideFlags: 0

@@ -4,25 +4,8 @@ using UnityEngine;
 
 public class Waypoint : MonoBehaviour
 {
-    // Use this for initialization
-    void Start ()
-    {
-    }
-
-    // Update is called once per frame
-    void Update ()
-    {
-    }
-
-    void OnDrawGizmos()
-    {
-        Gizmos.DrawIcon(GetPosition(), "Waypoint.png", false);
-    }
-
-    public Vector3 GetPosition()
-    {
-        return transform.position + Offset;
-    }
-
+    /// <summary>
+    /// Offset of the waypoint relative to the GameObject
+    /// </summary>
     public Vector3 Offset;
 }

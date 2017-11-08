@@ -141,6 +141,18 @@ public class AIDriver : ObjectBase
 
 
 
+    private List<ObjectBase> _KnownDrivers = new List<ObjectBase>();
+    /// <summary>
+    /// List of other drivers that the driver has observed.
+    /// </summary>
+    public List<ObjectBase> KnownDrivers
+    {
+        get { return _KnownDrivers; }
+        set { _KnownDrivers = value; }
+    }
+
+
+
     private bool _NavigationReady = false;
     /// <summary>
     /// Flag indicating if the driver is ready to navigate along a path.
@@ -197,9 +209,16 @@ public class AIDriver : ObjectBase
 
 
     /// <summary>
-    /// Lock to control access to Obstacles.
+    /// Lock to control access to KnownObstacles.
     /// </summary>
     public Mutex ObstacleMutex = new Mutex();
+
+
+
+    /// <summary>
+    /// Lock to control access to KnownDrivers.
+    /// </summary>
+    public Mutex DriverMutex = new Mutex();
 
 
 
@@ -462,8 +481,15 @@ public class AIDriver : ObjectBase
                 NavigationReady = true;
             }
 
-            // Look around for obstacles
-            LookForObstacles();
+            // If there are no konwn obstacles
+            if( KnownObstacles.Count == 0 )
+            {
+                // Look around for obstacles
+                LookForObstacles();
+            }
+
+            // Look around for other drivers
+            LookForDrivers();
 
             // Evaluate paths
             EvaluatePaths();
@@ -587,6 +613,20 @@ public class AIDriver : ObjectBase
                 }
             }
             ObstacleMutex.ReleaseMutex();
+
+            // Loop through each driver
+            DriverMutex.WaitOne();
+            foreach( ObjectBase CurrentDriver in KnownDrivers )
+            {
+                // If the knot is within the current driver, it is not feasible
+                if( MathUtilities.IsWithin( CurrentKnot, CurrentDriver ) )
+                {
+                    CurrentKnot.IsFeasible = false;
+                    CurrentPath.IsFeasible = false;
+                    break;
+                }
+            }
+            DriverMutex.ReleaseMutex();
         }
 
 
@@ -635,27 +675,8 @@ public class AIDriver : ObjectBase
                 // Initialize the clearance temp
                 double ClearanceTemp;
 
-                // Get the closest distance from the current segment to the current object
-                double CurrentMinDistance = MathUtilities.MinDistance( CurrentKnot, NextKnot, CurrentObstacle );
-
-                // If the min distance is greater than or equal to the safe distance
-                if ( CurrentMinDistance >= SafeDistance )
-                {
-                    ClearanceTemp = CurrentMinDistance - SafeDistance;
-                }
-
-                // Otherwise, calculate the interference weight
-                else
-                {
-                    ClearanceTemp = Math.Pow( Math.E, InterferenceWeight * (SafeDistance - CurrentMinDistance) ) - 1;
-
-                    // If the min distance is within the object
-                    if ( CurrentMinDistance < CurrentObstacle.Radius )
-                    {
-                        // The path is infeasible
-                        CurrentPath.IsFeasible = false;
-                    }
-                }
+                // Calculate the clearance of the current obstacle
+                ClearanceTemp = CalculateClearance( CurrentObstacle, CurrentKnot, NextKnot, CurrentPath );
 
                 // If the current temp clearance is greater than the current clearance, use it
                 if ( ClearanceTemp > Clearance )
@@ -665,6 +686,24 @@ public class AIDriver : ObjectBase
             }
             ObstacleMutex.ReleaseMutex();
 
+
+            // Loop through the drivers
+            DriverMutex.WaitOne();
+            foreach( ObjectBase CurrentDriver in KnownDrivers )
+            {
+                // Initialize the clearance temp
+                double ClearanceTemp;
+
+                // Calculate the clearance of the current obstacle
+                ClearanceTemp = CalculateClearance( CurrentDriver, CurrentKnot, NextKnot, CurrentPath );
+
+                // If the current temp clearance is greater than the current clearance, use it
+                if( ClearanceTemp > Clearance )
+                {
+                    Clearance = ClearanceTemp;
+                }
+            }
+            DriverMutex.ReleaseMutex();
         }
 
 
@@ -947,6 +986,43 @@ public class AIDriver : ObjectBase
                     }
                 }
                 ObstacleMutex.ReleaseMutex();
+
+
+                // Loop through the drivers
+                DriverMutex.WaitOne();
+                foreach( ObjectBase CurrentDriver in KnownDrivers )
+                {
+                    // Get the closest distance from the current segment to the current driver
+                    double CurrentMinDistance = MathUtilities.MinDistance( CurrentKnot, NextKnot, CurrentDriver );
+
+                    // If the min distance is greater than or equal to the safe distance
+                    if( CurrentMinDistance >= SafeDistance )
+                    {
+                        // Nothing to repair
+                        DriverMutex.ReleaseMutex();
+                        return;
+                    }
+
+                    // Otherwise, repair the segment
+                    else
+                    {
+                        // Find the point in the segment that is closest to the driver
+                        ObjectBase ClosestPoint = MathUtilities.ClosestPoint( CurrentKnot, NextKnot, CurrentDriver );
+
+                        // Find the vector from the driver to the closest point
+                        Vector ClosestVector = MathUtilities.GetUnitVector( CurrentDriver, ClosestPoint );
+
+                        // Calculate the distance to insert the point
+                        double Distance = CurrentDriver.Radius + SafeDistance;
+
+                        // Create a new point outside the driver
+                        Knot NewKnot = new Knot( CurrentDriver.X + (ClosestVector.I * Distance ), CurrentDriver.Y + (ClosestVector.J * Distance ) );
+
+                        // Add the knot to the path
+                        NewPath.InsertKnot( KnotIndex + 1, NewKnot );
+                    }
+                }
+                DriverMutex.ReleaseMutex();
                 break;
 
 
@@ -1214,7 +1290,7 @@ public class AIDriver : ObjectBase
 
 
     /// <summary>
-    /// Looks around the environment for obstacles and other robots.
+    /// Looks around the environment for fixed obstacles.
     /// </summary>
     public void LookForObstacles()
     {
@@ -1234,27 +1310,6 @@ public class AIDriver : ObjectBase
             KnownObstacles[ KnownObstacles.Count - 1 ].Radius += Radius;
         }
 
-
-        // Loop through all the AI drivers in the environment
-        foreach ( ObjectBase CurrentAIDriver in Environment.AIDrivers )
-        {
-            // If the current driver is this driver, skip it
-            if ( CurrentAIDriver == this )
-            { continue; }
-
-            // Add the driver to the list of known obstacles
-            KnownObstacles.Add( new ObjectBase( CurrentAIDriver ) );
-
-            // Add the driver radius to the obstacle
-            KnownObstacles[ KnownObstacles.Count - 1 ].Radius += Radius;
-        }
-
-
-        // Add the human driver to the list of known obstacles
-        KnownObstacles.Add( new ObjectBase( Environment.HumanDriver ) );
-        KnownObstacles[ KnownObstacles.Count - 1 ].Radius += Radius;
-
-
         // Release the mutex
         ObstacleMutex.ReleaseMutex();
     }
@@ -1262,23 +1317,80 @@ public class AIDriver : ObjectBase
 
 
     /// <summary>
-    /// Returns a copy of the paths.
+    /// Looks around the environment for human and other AI drivers.
     /// </summary>
-    /// <returns></returns>
-    public List<Path> GetPathsCopy()
+    public void LookForDrivers()
     {
-        return new List<Path>( Paths );
+        // Get the mutex
+        DriverMutex.WaitOne();
+
+        // Initialize the drivers list
+        KnownDrivers = new List<ObjectBase>();
+
+        // Loop through all the AI drivers in the environment
+        foreach( ObjectBase CurrentAIDriver in Environment.AIDrivers )
+        {
+            // If the current driver is this driver, skip it
+            if( CurrentAIDriver == this )
+            { continue; }
+
+            // Add the driver to the list of known drivers
+            KnownDrivers.Add( new ObjectBase( CurrentAIDriver ) );
+
+            // Add the driver radius to the driver
+            KnownDrivers[ KnownDrivers.Count - 1 ].Radius += Radius;
+        }
+
+
+        // Add the human driver to the list of known drivers
+        KnownDrivers.Add( new ObjectBase( Environment.HumanDriver ) );
+        KnownDrivers[ KnownDrivers.Count - 1 ].Radius += Radius;
+
+        // Release the mutex
+        DriverMutex.ReleaseMutex();
     }
 
 
 
     /// <summary>
-    /// Returns a copy of the best path.
+    /// Calculates the clearance of an object to a path segment between two nodes.
+    /// If the path is infeasible, the CurrentPath flag is updated.
     /// </summary>
-    /// <returns></returns>
-    public Path GetCurrentBestPathCopy()
+    /// <param name="CurrentObstacle">The current obstacle to check.</param>
+    /// <param name="CurrentKnot">The starting knot of the path segment.</param>
+    /// <param name="NextKnot">The ending knot of the path segment.</param>
+    /// <param name="CurrentPath">The path containing the path segment.</param>
+    /// <returns>The calculated clearance value.</returns>
+    public double CalculateClearance( ObjectBase CurrentObstacle, ObjectBase CurrentKnot, ObjectBase NextKnot, Path CurrentPath )
     {
-        return new Path( CurrentBestPath );
+        // Initialize the clearance
+        double Clearance;
+
+        // Get the closest distance from the current segment to the current object
+        double CurrentMinDistance = MathUtilities.MinDistance( CurrentKnot, NextKnot, CurrentObstacle );
+
+        // If the min distance is greater than or equal to the safe distance
+        if( CurrentMinDistance >= SafeDistance )
+        {
+            Clearance = CurrentMinDistance - SafeDistance;
+        }
+
+        // Otherwise, calculate the interference weight
+        else
+        {
+            Clearance = Math.Pow( Math.E, InterferenceWeight * (SafeDistance - CurrentMinDistance) ) - 1;
+
+            // If the min distance is within the object
+            if( CurrentMinDistance < CurrentObstacle.Radius )
+            {
+                // The path is infeasible
+                CurrentPath.IsFeasible = false;
+            }
+        }
+        
+
+        // Return the calculated clearance
+        return Clearance;
     }
 
     #endregion

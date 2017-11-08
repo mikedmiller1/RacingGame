@@ -72,14 +72,6 @@ public class GameController : MonoBehaviour
 
 
     /// <summary>
-    /// List of obstacle objects in the environment.
-    /// </summary>
-    [HideInInspector]
-    public List<GameObject> Obstacles = new List<GameObject>();
-
-
-
-    /// <summary>
     /// Radius within which the player has arrived at the destination.
     /// </summary>
     public float WaypointRadius;
@@ -87,9 +79,30 @@ public class GameController : MonoBehaviour
 
 
     /// <summary>
-    /// Radius of the obstacles.
+    /// Radius of the vehicle obstacles.
     /// </summary>
-    public float ObstacleRadius;
+    public float VehicleObstacleRadius;
+
+
+
+    /// <summary>
+    /// Radius of the wall obstacles.
+    /// </summary>
+    public float WallObstacleRadius;
+
+
+
+    /// <summary>
+    /// Flag to control adding wall obstacles to the AI driver environment.
+    /// </summary>
+    public bool UseWallObstacles;
+
+
+
+    /// <summary>
+    /// Flag to control debugging info.
+    /// </summary>
+    public bool Debugging;
 
     #endregion
 
@@ -102,70 +115,39 @@ public class GameController : MonoBehaviour
     /// </summary>
     void Start()
     {
-
         // Initialize the AI driver environment
         Environment = new Environment( -200, 200, -200, 200 );
+
 
         // Get the waypoints from the game objects around the track
         Waypoint[] WaypointsFromTrack = Track.GetComponentsInChildren<Waypoint>();
         foreach( Waypoint CurrentWaypoint in WaypointsFromTrack )
         {
-            // Create the waypoint in the UI environment
-            GameObject NewWaypoint = Instantiate( WaypointPrefab, CurrentWaypoint.transform.position, Quaternion.identity );
-            NewWaypoint.transform.localScale = new Vector3( WaypointRadius, WaypointRadius, 0 );
-            Waypoints.Add( NewWaypoint );
-
             // Add the waypoint as a goal in the AI environment
             Environment.Goals.Add( new Goal( CurrentWaypoint.transform.position, WaypointRadius ) );
         }
 
 
+        // Check if we should add wall obstacles
+        if( UseWallObstacles )
+        {
+            // Get the wall obstacles from the game objects around the track
+            WallObstacle[] WallObstaclesFromTrack = Track.GetComponentsInChildren<WallObstacle>();
+            foreach( WallObstacle CurrentWallObstacle in WallObstaclesFromTrack )
+            {
+                if( Debugging )
+                {
+                    Instantiate( ObstaclePrefab, CurrentWallObstacle.GetPosition(), Quaternion.identity );
+                }
+
+                // Add the wall obstable as an obstacle in the AI environment
+                Environment.Obstacles.Add( new Obstacle( CurrentWallObstacle.transform.position, WallObstacleRadius ) );
+            }
+        }
+        
+
         // Add the human player object in the AI driver environment
-        Environment.HumanDriver = new HumanDriver( HumanPlayer.transform.position.x, HumanPlayer.transform.position.z, ObstacleRadius );
-
-
-
-        /*  Hard coded waypoints and obstacles for testing
-        // Define a list of waypoint coordiantes
-        List<Vector3> WaypointCoordinatesList = new List<Vector3>();
-        WaypointCoordinatesList.Add( new Vector3( 10, 10, 0 ) );
-        WaypointCoordinatesList.Add( new Vector3( -10, 10, 0 ) );
-        WaypointCoordinatesList.Add( new Vector3( -10, -10, 0 ) );
-        WaypointCoordinatesList.Add( new Vector3( 10, -10, 0 ) );
-
-        // Define a list of obstacles
-        List<Vector3> ObstacleCoordinatesList = new List<Vector3>();
-        ObstacleCoordinatesList.Add( new Vector3( 4, 11, 0 ) );
-        ObstacleCoordinatesList.Add( new Vector3( -4, 9, 0 ) );
-        ObstacleCoordinatesList.Add( new Vector3( -10, -5, 0 ) );
-        ObstacleCoordinatesList.Add( new Vector3( -5, -10, 0 ) );
-
-        // Populate the waypoints
-        foreach( Vector3 CurrentWaypoint in WaypointCoordinatesList )
-        {
-            // Create the waypoint in the UI environment
-            GameObject NewWaypoint = Instantiate( WaypointPrefab, CurrentWaypoint, Quaternion.identity );
-            NewWaypoint.transform.localScale = new Vector3( WaypointRadius, WaypointRadius, 0 );
-            Waypoints.Add( NewWaypoint );
-
-            // Add the waypoint as a goal in the AI environment
-            Environment.Goals.Add( new Goal( CurrentWaypoint, WaypointRadius ) );
-        }
-        
-        
-        // Populate the obstacles
-        foreach( Vector3 CurrentObstacle in ObstacleCoordinatesList )
-        {
-            // Create the obstacle in the UI environment
-            GameObject NewObstacle = Instantiate( ObstaclePrefab, CurrentObstacle, Quaternion.identity );
-            NewObstacle.transform.localScale = new Vector3( ObstacleRadius, ObstacleRadius, 0 );
-            Obstacles.Add( NewObstacle );
-
-            // Add the obstacle in the AI environment
-            Environment.Obstacles.Add( new Obstacle( CurrentObstacle, ObstacleRadius ) );
-        }
-        */
-
+        Environment.HumanDriver = new HumanDriver( HumanPlayer.transform.position.x, HumanPlayer.transform.position.z, VehicleObstacleRadius );
 
 
         // Create the driver game objects
@@ -173,7 +155,7 @@ public class GameController : MonoBehaviour
         for( int PlayerNum = 0; PlayerNum < NumberOfAIPlayers; PlayerNum++ )
         {
             // Calculate the initial position
-            Vector3 StartPosition = new Vector3( PlayerNum * 2.5f, 0, 0 );
+            Vector3 StartPosition = new Vector3( (PlayerNum + 1) * 2.5f, 0, 0 );
 
             // Create the driver in the UI environment
             GameObject NewDriver = Instantiate( PlayerPrefab, StartPosition, Quaternion.identity );
@@ -181,7 +163,7 @@ public class GameController : MonoBehaviour
 
             // Create a new driver AI
             string DriverName = "Player " + PlayerNum.ToString();
-            AIDriver NewDriverAI = new AIDriver( DriverName, Environment, NewDriver.transform.position.x, NewDriver.transform.position.y, ObstacleRadius )
+            AIDriver NewDriverAI = new AIDriver( DriverName, Environment, NewDriver.transform.position.x, NewDriver.transform.position.y, VehicleObstacleRadius )
             {
                 ShouldCheckDirectPath = NewDriver.GetComponent<AIPlayerController>().CheckDirectPath,
                 Speed = NewDriver.GetComponent<AIPlayerController>().MaxSpeed

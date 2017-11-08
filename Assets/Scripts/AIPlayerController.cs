@@ -121,19 +121,4 @@ public class AIPlayerController : MonoBehaviour {
     }
 
     #endregion
-
-
-
-    #region Public Methods
-
-    /// <summary>
-    /// Moves the player to the specified destination.
-    /// </summary>
-    /// <param name="Destination">The location to move to.</param>
-    public void MoveTo( Vector3 Destination )
-    {
-        
-    }
-
-    #endregion
 }
