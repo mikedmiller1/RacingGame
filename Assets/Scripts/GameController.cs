@@ -116,7 +116,7 @@ public class GameController : MonoBehaviour
     void Start()
     {
         // Initialize the AI driver environment
-        Environment = new Environment( -200, 200, -200, 200 );
+        Environment = new Environment( -40, 20, -40, 10 );
 
 
         // Get the waypoints from the game objects around the track

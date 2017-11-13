@@ -6054,7 +6054,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c3b7022ec9521c54ea06c0ab54cfef28, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  NumberOfAIPlayers: 5
+  NumberOfAIPlayers: 1
   Track: {fileID: 1152778841}
   HumanPlayer: {fileID: 251421774}
   PlayerPrefab: {fileID: 1129043903399840, guid: d6685a8640c5b624b81b63cf7aeb27c6,

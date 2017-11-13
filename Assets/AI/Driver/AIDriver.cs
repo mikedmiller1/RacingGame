@@ -531,11 +531,37 @@ public class AIDriver : ObjectBase
             // Set the first knot to the driver
             NewPath.AddKnot( new Knot( X, Y ) );
 
+
+            // Create weighted random values for the area between the driver and the goal
+            // Weight the area between the driver and the goal the highest
+            // Get the X and Y distance between the driver and the goal
+            double DistX = CurrentGoal.X - X;
+            double DistY = CurrentGoal.Y - Y;
+
+            // Get the size of the environment for the weight array size
+            int SizeX = (int)Math.Ceiling( Environment.XMax - Environment.XMin );
+            int SizeY = (int)Math.Ceiling( Environment.YMin - Environment.YMax );
+
+            // Get the coordinate of the midpoint between the driver and the goal
+            ObjectBase Midpoint = new ObjectBase( (X + DistX/2), (Y + DistY/2), 0 );
+
+            // Get a normal distribution around the midpoint
+            // Put the driver and the goal at 2*sigma
+            int NormDistScale = 10;
+            double[] NorDistX = MathUtilities.GetNormalDistribution( Environment.XMin * NormDistScale, Environment.XMax * NormDistScale, Math.Abs(SizeX * NormDistScale), Midpoint.X * NormDistScale, 0.25*DistX * NormDistScale );
+            double[] NorDistY = MathUtilities.GetNormalDistribution( Environment.YMin * NormDistScale, Environment.YMax * NormDistScale, Math.Abs(SizeY * NormDistScale), Midpoint.Y * NormDistScale, 0.25*DistY * NormDistScale );
+            
             // Loop through the remaining number of knots to add
-            // Subtract two for the first (driver) and last (goal) knots
+            // Subtract for the first (driver) and last (goal) knots
             for ( int KnotNum = 0; KnotNum < NumberOfKnots - 1; KnotNum++ )
             {
-                NewPath.AddKnot( new Knot( MathUtilities.GetRandomInRange( Environment.XMin, Environment.XMax, Random ), MathUtilities.GetRandomInRange( Environment.YMin, Environment.YMax, Random ) ) );
+                // Get a weighted random for the X and Y coordinates
+                double RandX = MathUtilities.GetWeightedRandom( NorDistX, Random ) / (double)NormDistScale + Environment.XMin;
+                double RandY = MathUtilities.GetWeightedRandom( NorDistY, Random ) / (double)NormDistScale + Environment.YMin;
+
+                // Create the new knot
+                NewPath.AddKnot( new Knot( RandX, RandY ) );
+
             }
 
             // Set the last knot to the goal

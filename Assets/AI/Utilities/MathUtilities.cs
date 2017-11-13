@@ -402,6 +402,43 @@ public static class MathUtilities
         // Return the random number
         return ScaledRandom;
     }
+
+
+
+    /// <summary>
+    /// Returns an array of a normal distribution.
+    /// See https://www.mathworks.com/help/stats/normal-distribution.html
+    /// </summary>
+    /// <param name="MinX">The minimum X value.</param>
+    /// <param name="MaxX">The maximum X value.</param>
+    /// <param name="Length">The length of the array.</param>
+    /// <param name="Mean">The mean of the distribution. Default is 0.</param>
+    /// <param name="StdDev">The standard deviation of the distribution. Default is 1.</param>
+    /// <returns></returns>
+    public static double[] GetNormalDistribution( double MinX, double MaxX, int Length, double Mean = 0, double StdDev = 1 )
+    {
+        // Create the output array
+        double[] Y = new double[ Length ];
+
+
+        // Calculate the X interval
+        double IntervalX = (MaxX - MinX) / Length;
+
+        // Loop through the X values
+        double X = MinX;
+        for( int i = 0; i < Length; i++ )
+        {
+            // Calculate the Y value
+            Y[ i ] = (1 / (StdDev * Math.Sqrt( 2 * Math.PI ))) * Math.Pow( Math.E, (-Math.Pow(X - Mean, 2) / (2 * Math.Pow( StdDev, 2 ))));
+
+            // Increment the X value
+            X += IntervalX;
+        }
+
+
+        // Return the output array
+        return Y;
+    }
 }
 
 
