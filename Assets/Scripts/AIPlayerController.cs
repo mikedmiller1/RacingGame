@@ -17,7 +17,16 @@ public class AIPlayerController : MonoBehaviour {
     /// <summary>
     /// Maximum speed of the player.
     /// </summary>
+    [HideInInspector]
     public float MaxSpeed;
+
+
+
+    /// <summary>
+    /// Flag to control extra debugging info.
+    /// </summary>
+    [HideInInspector]
+    public bool Debugging = false;
 
     #endregion
 
@@ -137,7 +146,6 @@ public class AIPlayerController : MonoBehaviour {
                 CurrentWaypoint = NextWaypoint;
             }
 
-
             // Get the vector from the current position to the waypoint
             Vector2 Towards = CurrentWaypoint - Position;
 
@@ -156,13 +164,16 @@ public class AIPlayerController : MonoBehaviour {
             bool LeftCollision   = Physics2D.Raycast( RaycastOrigin, LeftDirection,   RaycastDistance );
             bool RightCollision  = Physics2D.Raycast( RaycastOrigin, RightDirection,  RaycastDistance );
 
-            // Draw lines for debugging
-            Vector2 CenterLine = new Vector3( CenterDirection.x * RaycastDistance, CenterDirection.y * RaycastDistance, 0 );
-            Vector2 LeftLine   = new Vector3( LeftDirection.x   * RaycastDistance, LeftDirection.y   * RaycastDistance, 0 );
-            Vector2 RightLine  = new Vector3( RightDirection.x  * RaycastDistance, RightDirection.y  * RaycastDistance, 0 );
-            Debug.DrawRay( RaycastOrigin, CenterLine, Color.blue, Time.deltaTime, false );
-            Debug.DrawRay( RaycastOrigin, LeftLine, Color.green, Time.deltaTime, false );
-            Debug.DrawRay( RaycastOrigin, RightLine, Color.red, Time.deltaTime, false );
+            // Draw raycast lines if debugging
+            if( Debugging )
+            {
+                Vector2 CenterLine = new Vector3( CenterDirection.x * RaycastDistance, CenterDirection.y * RaycastDistance, 0 );
+                Vector2 LeftLine   = new Vector3( LeftDirection.x   * RaycastDistance, LeftDirection.y   * RaycastDistance, 0 );
+                Vector2 RightLine  = new Vector3( RightDirection.x  * RaycastDistance, RightDirection.y  * RaycastDistance, 0 );
+                Debug.DrawRay( RaycastOrigin, CenterLine, Color.blue, Time.deltaTime, false );
+                Debug.DrawRay( RaycastOrigin, LeftLine, Color.green, Time.deltaTime, false );
+                Debug.DrawRay( RaycastOrigin, RightLine, Color.red, Time.deltaTime, false );
+            }
 
 
             // Check if any raycasts detected a collision
@@ -240,7 +251,7 @@ public class AIPlayerController : MonoBehaviour {
             // Rotate to the destination
             Quaternion TowardsRotation = Quaternion.LookRotation( Towards.normalized );
             TowardsRotation = TowardsRotation * Quaternion.Euler( 0, 90, 90 );  // Have to rotate 90* about Y and Z for some reason...
-            transform.rotation = Quaternion.Lerp( transform.rotation, TowardsRotation, Time.deltaTime * 10 );
+            transform.rotation = Quaternion.Slerp( transform.rotation, TowardsRotation, Time.deltaTime * 8 );
 
 
             // Check if we reached a waypoint

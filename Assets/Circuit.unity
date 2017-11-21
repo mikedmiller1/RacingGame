@@ -2004,16 +2004,6 @@ Prefab:
       propertyPath: m_Name
       value: Turn 2
       objectReference: {fileID: 0}
-    - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
-        type: 2}
-      propertyPath: Offset.x
-      value: 0.81
-      objectReference: {fileID: 0}
-    - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
-        type: 2}
-      propertyPath: Offset.y
-      value: -1.71
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
   m_IsPrefabParent: 0
@@ -3087,6 +3077,11 @@ Prefab:
         type: 2}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 58478708159120496, guid: 9c149b8cc60164c78a27460edaca3ccc,
+        type: 2}
+      propertyPath: m_IsTrigger
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
@@ -5053,16 +5048,6 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
-    - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
-        type: 2}
-      propertyPath: Offset.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
-        type: 2}
-      propertyPath: Offset.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1888513902288514, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
       propertyPath: m_Name
       value: Turn 1
@@ -5964,11 +5949,6 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 270
       objectReference: {fileID: 0}
-    - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
-        type: 2}
-      propertyPath: Offset.x
-      value: 0
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
   m_IsPrefabParent: 0
@@ -6080,8 +6060,11 @@ MonoBehaviour:
   Waypoints: []
   WaypointPrefab: {fileID: 1613834515478130, guid: 67285761adad52c46ab001d0ed164944,
     type: 2}
-  WaypointArriveRadius: 1
-  DriverStartSpacing: 1.5
+  WaypointArriveRadius: 1.7
+  DriverStartSpacing: 1
+  NormalMaxSpeed: 0.08
+  MaxSpeedAdjustmentRange: 0.015
+  Debugging: 1
 --- !u!4 &1660774917
 Transform:
   m_ObjectHideFlags: 0

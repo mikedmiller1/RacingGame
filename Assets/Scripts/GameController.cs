@@ -44,6 +44,9 @@ public class GameController : MonoBehaviour
 
 
 
+    /// <summary>
+    /// The Waypoint game object to use when debugging.
+    /// </summary>
     public GameObject WaypointPrefab;
 
 
@@ -63,9 +66,30 @@ public class GameController : MonoBehaviour
 
 
     /// <summary>
+    /// The normal max speed of the AI drivers, before random adjustment.
+    /// </summary>
+    public float NormalMaxSpeed = 0.1f;
+
+
+
+    /// <summary>
+    /// The max speed random adjustment range to apply.
+    /// </summary>
+    public float MaxSpeedAdjustmentRange = 0.015f;
+
+
+
+    /// <summary>
     /// Global random number generator.
     /// </summary>
     private System.Random rand = new System.Random();
+
+
+
+    /// <summary>
+    /// Flag to control extra debugging info.
+    /// </summary>
+    public bool Debugging;
 
     #endregion
 
@@ -84,7 +108,9 @@ public class GameController : MonoBehaviour
         {
             // Add the waypoint to the list
             Waypoints.Add( new Vector2( CurrentWaypoint.transform.position.x, CurrentWaypoint.transform.position.y ) );
-            //Instantiate( WaypointPrefab, CurrentWaypoint.transform );
+
+            if( Debugging )
+            { Instantiate( WaypointPrefab, CurrentWaypoint.transform ); }
         }
 
 
@@ -105,6 +131,12 @@ public class GameController : MonoBehaviour
             NewDriver.GetComponent<AIPlayerController>().ArriveRadius = WaypointArriveRadius;
             NewDriver.GetComponent<AIPlayerController>().Waypoints = new List<Vector2>( Waypoints );
             NewDriver.GetComponent<AIPlayerController>().rand = rand;
+            NewDriver.GetComponent<AIPlayerController>().Debugging = Debugging;
+            NewDriver.GetComponent<AIPlayerController>().MaxSpeed = NormalMaxSpeed;
+
+            // Get a random speed adjustment
+            double SpeedAdjustment = (rand.NextDouble() - 0.5) * MaxSpeedAdjustmentRange;
+            NewDriver.GetComponent<AIPlayerController>().MaxSpeed += (float)SpeedAdjustment;
 
             // Activate the driver navigaction
             NewDriver.GetComponent<AIPlayerController>().NavigationActive = true;
