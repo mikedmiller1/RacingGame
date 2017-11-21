@@ -8,23 +8,17 @@ public class GameController : MonoBehaviour
     #region Properties
 
     /// <summary>
-    /// The number of AI players.
+    /// The number of AI drivers.
     /// </summary>
-    public float NumberOfAIPlayers;
+    public float NumberOfAIDrivers;
 
 
 
     /// <summary>
-    /// List of player objects.
+    /// List of AI driver objects.
     /// </summary>
-    private List<GameObject> Players;
-
-
-
-    /// <summary>
-    /// The AI environment.
-    /// </summary>
-    private Environment Environment;
+    [HideInInspector]
+    public List<GameObject> AIDrivers;
 
 
 
@@ -36,13 +30,6 @@ public class GameController : MonoBehaviour
 
 
     /// <summary>
-    /// Reference to the human player object.
-    /// </summary>
-    public GameObject HumanPlayer;
-
-
-
-    /// <summary>
     /// Reference to the player prefab.
     /// </summary>
     public GameObject PlayerPrefab;
@@ -50,59 +37,35 @@ public class GameController : MonoBehaviour
 
 
     /// <summary>
-    /// Reference to the waypoint prefab.
+    /// List of waypoint locations around the track.
     /// </summary>
+    [HideInInspector]
+    public List<Vector2> Waypoints = new List<Vector2>();
+
+
+
     public GameObject WaypointPrefab;
 
 
 
     /// <summary>
-    /// Reference to the obstacle prefab.
+    /// Radius within which the player has arrived at the waypoint.
     /// </summary>
-    public GameObject ObstaclePrefab;
+    public float WaypointArriveRadius;
 
 
 
     /// <summary>
-    /// List of waypoint objects in the environment.
+    /// The initial spacing of the drivers for the start.
     /// </summary>
-    [HideInInspector]
-    public List<GameObject> Waypoints = new List<GameObject>();
+    public float DriverStartSpacing = 2.5f;
 
 
 
     /// <summary>
-    /// Radius within which the player has arrived at the destination.
+    /// Global random number generator.
     /// </summary>
-    public float WaypointRadius;
-
-
-
-    /// <summary>
-    /// Radius of the vehicle obstacles.
-    /// </summary>
-    public float VehicleObstacleRadius;
-
-
-
-    /// <summary>
-    /// Radius of the wall obstacles.
-    /// </summary>
-    public float WallObstacleRadius;
-
-
-
-    /// <summary>
-    /// Flag to control adding wall obstacles to the AI driver environment.
-    /// </summary>
-    public bool UseWallObstacles;
-
-
-
-    /// <summary>
-    /// Flag to control debugging info.
-    /// </summary>
-    public bool Debugging;
+    private System.Random rand = new System.Random();
 
     #endregion
 
@@ -115,75 +78,38 @@ public class GameController : MonoBehaviour
     /// </summary>
     void Start()
     {
-        // Initialize the AI driver environment
-        Environment = new Environment( -40, 20, -40, 10 );
-
-
         // Get the waypoints from the game objects around the track
         Waypoint[] WaypointsFromTrack = Track.GetComponentsInChildren<Waypoint>();
         foreach( Waypoint CurrentWaypoint in WaypointsFromTrack )
         {
-            // Add the waypoint as a goal in the AI environment
-            Environment.Goals.Add( new Goal( CurrentWaypoint.transform.position, WaypointRadius ) );
+            // Add the waypoint to the list
+            Waypoints.Add( new Vector2( CurrentWaypoint.transform.position.x, CurrentWaypoint.transform.position.y ) );
+            //Instantiate( WaypointPrefab, CurrentWaypoint.transform );
         }
-
-
-        // Check if we should add wall obstacles
-        if( UseWallObstacles )
-        {
-            // Get the wall obstacles from the game objects around the track
-            WallObstacle[] WallObstaclesFromTrack = Track.GetComponentsInChildren<WallObstacle>();
-            foreach( WallObstacle CurrentWallObstacle in WallObstaclesFromTrack )
-            {
-                if( Debugging )
-                {
-                    Instantiate( ObstaclePrefab, CurrentWallObstacle.GetPosition(), Quaternion.identity );
-                }
-
-                // Add the wall obstable as an obstacle in the AI environment
-                Environment.Obstacles.Add( new Obstacle( CurrentWallObstacle.transform.position, WallObstacleRadius ) );
-            }
-        }
-        
-
-        // Add the human player object in the AI driver environment
-        Environment.HumanDriver = new HumanDriver( HumanPlayer.transform.position.x, HumanPlayer.transform.position.z, VehicleObstacleRadius );
 
 
         // Create the driver game objects
-        Players = new List<GameObject>();
-        for( int PlayerNum = 0; PlayerNum < NumberOfAIPlayers; PlayerNum++ )
+        AIDrivers = new List<GameObject>();
+        for( int PlayerNum = 0; PlayerNum < NumberOfAIDrivers; PlayerNum++ )
         {
             // Calculate the initial position
-            Vector3 StartPosition = new Vector3( (PlayerNum + 1) * 2.5f, 0, 0 );
+            Vector2 StartPosition = new Vector2( (PlayerNum + 1) * DriverStartSpacing, 0 );
 
             // Create the driver in the UI environment
             GameObject NewDriver = Instantiate( PlayerPrefab, StartPosition, Quaternion.identity );
-            Players.Add( NewDriver );
+            AIDrivers.Add( NewDriver );
 
             // Create a new driver AI
             string DriverName = "Player " + PlayerNum.ToString();
-            AIDriver NewDriverAI = new AIDriver( DriverName, Environment, NewDriver.transform.position.x, NewDriver.transform.position.y, VehicleObstacleRadius )
-            {
-                ShouldCheckDirectPath = NewDriver.GetComponent<AIPlayerController>().CheckDirectPath,
-                Speed = NewDriver.GetComponent<AIPlayerController>().MaxSpeed
-            };
-            NewDriver.GetComponent<AIPlayerController>().AiDriver = NewDriverAI;
-            NewDriver.GetComponent<AIPlayerController>().ArriveRadius = WaypointRadius;
+            NewDriver.GetComponent<AIPlayerController>().Name = DriverName;
+            NewDriver.GetComponent<AIPlayerController>().ArriveRadius = WaypointArriveRadius;
+            NewDriver.GetComponent<AIPlayerController>().Waypoints = new List<Vector2>( Waypoints );
+            NewDriver.GetComponent<AIPlayerController>().rand = rand;
 
-            // Add the driver in the AI environment
-            Environment.AIDrivers.Add( NewDriverAI );
+            // Activate the driver navigaction
+            NewDriver.GetComponent<AIPlayerController>().NavigationActive = true;
         }
 
-
-        // Start the AI drivers
-        foreach( GameObject Player in Players )
-        {
-            // Start the driver
-            Player.GetComponent<AIPlayerController>().AiDriver.PlannerActive = true;
-            Player.GetComponent<AIPlayerController>().AiDriver.NavigationActive = true;
-            Player.GetComponent<AIPlayerController>().AiDriver.RunSimulation = true;
-        }
     }
 
 
@@ -193,11 +119,6 @@ public class GameController : MonoBehaviour
     /// </summary>
     void Update()
     {
-        // Update the human driver position
-        Environment.HumanDriver.X = HumanPlayer.transform.position.x;
-        Environment.HumanDriver.Y = HumanPlayer.transform.position.y;
-
-
         // Check for a left mouse click
         if ( Input.GetMouseButtonDown( 0 ) )
         {

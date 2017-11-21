@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class AIPlayerController : MonoBehaviour {
 
-    #region Properties
+    #region Driver Properties
 
     /// <summary>
     /// The name of the driver.
@@ -19,18 +19,22 @@ public class AIPlayerController : MonoBehaviour {
     /// </summary>
     public float MaxSpeed;
 
+    #endregion
 
+
+
+    #region Path Planning Properties
 
     /// <summary>
-    /// Target location for movement.
+    /// Flag that controls the movement of the AI driver.
     /// </summary>
     [HideInInspector]
-    public Vector3 Destination = new Vector3();
+    public bool NavigationActive = false;
 
 
 
     /// <summary>
-    /// Radius within which the player has arrived at the destination.
+    /// Radius within which the driver has arrived at a waypoint.
     /// </summary>
     [HideInInspector]
     public float ArriveRadius;
@@ -38,30 +42,78 @@ public class AIPlayerController : MonoBehaviour {
 
 
     /// <summary>
-    /// AI driver.
+    /// List of all waypoints.
     /// </summary>
-    public AIDriver AiDriver;
+    [HideInInspector]
+    public List<Vector2> Waypoints = new List<Vector2>();
+
+
+    /// <summary>
+    /// The current waypoint that the driver is moving towards.
+    /// </summary>
+    [HideInInspector]
+    public Vector2 CurrentWaypoint;
+
+    #endregion
+
+
+    #region Local Avoidance Properties
+
+    /// <summary>
+    /// The distance to perform the raycast.
+    /// </summary>
+    public float RaycastDistance;
 
 
 
     /// <summary>
-    /// Flag to control showing the current path.
+    /// The angle of the left and right raycasts, in degrees.
     /// </summary>
-    public bool ShowCurrentPath;
+    public float RaycastAngle;
 
 
 
     /// <summary>
-    /// Flag to control showing all paths.
+    /// Angle to adjust path to avoid collisions.
     /// </summary>
-    public bool ShowAllPaths;
+    public float CollisionAvoidanceAngle;
 
 
 
     /// <summary>
-    /// Flag to control the planner checking a direct path to the goal.
+    /// Reference to the global random number generator in the GameController.
     /// </summary>
-    public bool CheckDirectPath;
+    [HideInInspector]
+    public System.Random rand;
+
+
+
+    /// <summary>
+    /// Direction chosen for current obstacle avoidance.
+    /// 1 is left, -1 is right.
+    /// </summary>
+    private int AvoidanceDirection = 1;
+
+
+
+    /// <summary>
+    /// Flag indicating if the driver is currently avoiding an obstacle.
+    /// </summary>
+    private bool Avoiding = false;
+
+    #endregion
+
+
+
+    #region Fields
+
+    /// <summary>
+    /// The position of the AI player as a Vector2.
+    /// </summary>
+    private Vector2 Position
+    {
+        get { return new Vector2( transform.position.x, transform.position.y ); }
+    }
 
     #endregion
 
@@ -72,52 +124,139 @@ public class AIPlayerController : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        // Check if all paths should be drawn
-        if( ShowAllPaths )
+        // If there are waypoints to use and navigation is active
+        if( Waypoints.Count > 0 && NavigationActive )
         {
-            // Draw all the paths in grey
-            foreach( Path CurrentPath in AiDriver.Paths )
+            // Get the next waypoint from the list of waypoints
+            Vector2 NextWaypoint = Waypoints[ 0 ];
+
+            // Check if the current waypoint has changed from last time
+            if( CurrentWaypoint != NextWaypoint )
             {
-                foreach( Segment CurrentSegment in CurrentPath.Segments )
+                // Assign the next waypoint as the current waypoint
+                CurrentWaypoint = NextWaypoint;
+            }
+
+
+            // Get the vector from the current position to the waypoint
+            Vector2 Towards = CurrentWaypoint - Position;
+
+
+            // Perform local avoidance
+            // Define the origin of the raycasts
+            Vector2 RaycastOrigin = Position + Towards.normalized * 0.6f;
+
+            // Define the directions for the collision raycasts
+            Vector2 CenterDirection = Towards.normalized;
+            Vector2 LeftDirection   = Quaternion.Euler( 0, 0, RaycastAngle ) * CenterDirection;
+            Vector2 RightDirection  = Quaternion.Euler( 0, 0, -RaycastAngle ) * CenterDirection;
+
+            // Perform a raycast forward and to either side
+            bool CenterCollision = Physics2D.Raycast( RaycastOrigin, CenterDirection, RaycastDistance );
+            bool LeftCollision   = Physics2D.Raycast( RaycastOrigin, LeftDirection,   RaycastDistance );
+            bool RightCollision  = Physics2D.Raycast( RaycastOrigin, RightDirection,  RaycastDistance );
+
+            // Draw lines for debugging
+            Vector2 CenterLine = new Vector3( CenterDirection.x * RaycastDistance, CenterDirection.y * RaycastDistance, 0 );
+            Vector2 LeftLine   = new Vector3( LeftDirection.x   * RaycastDistance, LeftDirection.y   * RaycastDistance, 0 );
+            Vector2 RightLine  = new Vector3( RightDirection.x  * RaycastDistance, RightDirection.y  * RaycastDistance, 0 );
+            Debug.DrawRay( RaycastOrigin, CenterLine, Color.blue, Time.deltaTime, false );
+            Debug.DrawRay( RaycastOrigin, LeftLine, Color.green, Time.deltaTime, false );
+            Debug.DrawRay( RaycastOrigin, RightLine, Color.red, Time.deltaTime, false );
+
+
+            // Check if any raycasts detected a collision
+            // Center
+            if( CenterCollision )
+            {
+                // If we are not already avoiding an obstacle, randomly pick a direction
+                // Otherwise, the driver will keep going in the direction already chosen
+                if( !Avoiding )
                 {
-                    Vector3 Start = new Vector3( (float)CurrentSegment.X, (float)CurrentSegment.Y, 0 );
-                    Vector3 End = new Vector3( (float)CurrentSegment.X2, (float)CurrentSegment.Y2, 0 );
-                    Debug.DrawLine( Start, End, Color.gray, Time.deltaTime, false );
+                    // For a center collision, pick a random direction to turn
+                    // Get a random number from 0 to 1
+                    double r = rand.NextDouble();
+
+                    // If the random number is < 0.5, go left
+                    if( r < 0.5 )
+                    { AvoidanceDirection = 1; }
+
+                    // Otherwise, go right
+                    else
+                    { AvoidanceDirection = -1; }
                 }
-            }
-        }
 
-        // Check if the current path should be drawn
-        if( ShowCurrentPath )
-        {
-            // Draw the current best path in red
-            foreach( Segment CurrentSegment in AiDriver.CurrentBestPath.Segments )
+                // Set the avoiding flag
+                Avoiding = true;
+            }
+
+            // Left
+            else if( LeftCollision )
             {
-                Vector3 Start = new Vector3( (float)CurrentSegment.X, (float)CurrentSegment.Y, 0 );
-                Vector3 End = new Vector3( (float)CurrentSegment.X2, (float)CurrentSegment.Y2, 0 );
-                Debug.DrawLine( Start, End, Color.red, Time.deltaTime, false );
+                AvoidanceDirection = -1;
+                Avoiding = true;
             }
+
+            // Right
+            else if( RightCollision )
+            {
+                AvoidanceDirection = 1;
+                Avoiding = true;
+            }
+
+            // No collisions
+            else
+            {
+                Avoiding = false;
+            }
+
+
+            // If the driver is avoiding an obstacle
+            if( Avoiding )
+            {
+                // Rotate the towards vector by the avoidance angle, in the correct direction
+                Towards = Quaternion.Euler( 0, 0, CollisionAvoidanceAngle * AvoidanceDirection ) * Towards;
+            }
+
+
+            // Initialize the distance to move as the maximum speed
+            float DistanceToMove = MaxSpeed;
+
+            // If moving at the max speed is greater than the distance to the waypoint, use the shorter distance
+            if( DistanceToMove > Towards.magnitude )
+            {
+                DistanceToMove = Towards.magnitude;
+            }
+
+            // Multiply the direction unit vector by the speed to get the XY distance
+            Vector2 MoveVector = Towards.normalized * DistanceToMove;
+
+            // Calculate the new position
+            Vector2 NewPosition = Position + MoveVector;
+
+            // Move to the new position
+            transform.position = NewPosition;
+
+            // Rotate to the destination
+            Quaternion TowardsRotation = Quaternion.LookRotation( Towards.normalized );
+            TowardsRotation = TowardsRotation * Quaternion.Euler( 0, 90, 90 );  // Have to rotate 90* about Y and Z for some reason...
+            transform.rotation = Quaternion.Lerp( transform.rotation, TowardsRotation, Time.deltaTime * 10 );
+
+
+            // Check if we reached a waypoint
+            // Get the distance to the current waypoint
+            Vector2 DistanceRemaining = CurrentWaypoint - Position;
+
+            // If the distance is less than the arrive radius
+            if( DistanceRemaining.magnitude <= ArriveRadius )
+            {
+                // Move the current waypoint to the end of the list
+                Waypoints.Add( new Vector2( CurrentWaypoint.x, CurrentWaypoint.y ) );
+                Waypoints.Remove( CurrentWaypoint );
+            }
+
         }
 
-
-        // Perform navigation
-        AiDriver.Navigate();
-
-        // Assign the destination
-        Destination.x = (float)AiDriver.X;
-        Destination.z = (float)AiDriver.Y;
-
-
-        // Get the distance from the current position to the destination
-        Vector3 Towards = Destination - transform.position;
-        float RemainingDistance = Towards.magnitude;
-        Quaternion TowardsRotation = Quaternion.LookRotation( Towards );
-
-        // Rotate to the destination
-        transform.rotation = Quaternion.Lerp( transform.rotation, TowardsRotation, Time.deltaTime * 10 );
-
-        // Move the player
-        transform.position = new Vector3( (float)AiDriver.X, (float)AiDriver.Y, 0 );
     }
 
     #endregion
