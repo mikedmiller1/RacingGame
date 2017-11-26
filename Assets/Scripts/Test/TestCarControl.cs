@@ -9,8 +9,6 @@ public class TestCarControl : MonoBehaviour
     void Start()
     {
         animator_ = GetComponent<Animator>();
-        rigidBody_ = GetComponent<Rigidbody2D>();
-        contacts_ = new ContactPoint2D[1];
         var textControls = GameObject.Find("UICanvas").GetComponentsInChildren<Text>();
         foreach (var control in textControls)
         {
@@ -272,9 +270,6 @@ public class TestCarControl : MonoBehaviour
     private Vector3 velocity_;
 
     private Animator animator_;
-
-    private Rigidbody2D rigidBody_;
-    private ContactPoint2D[] contacts_;
 
     private float coast_;
 

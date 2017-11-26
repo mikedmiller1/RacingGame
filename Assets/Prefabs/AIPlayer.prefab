@@ -26,7 +26,7 @@ GameObject:
   - component: {fileID: 95237961860057294}
   m_Layer: 0
   m_Name: AIPlayer
-  m_TagString: Untagged
+  m_TagString: Opponent
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -119,6 +119,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Name: 
   MaxSpeed: 0.1
+  Debugging: 0
   NavigationActive: 0
   ArriveRadius: 0
   Waypoints: []
