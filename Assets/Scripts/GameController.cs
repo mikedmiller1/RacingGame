@@ -30,7 +30,7 @@ public class GameController : MonoBehaviour
 
 
     /// <summary>
-    /// Reference to the player prefab.
+    /// Reference to the opponent prefab.
     /// </summary>
     public GameObject PlayerPrefab;
 
