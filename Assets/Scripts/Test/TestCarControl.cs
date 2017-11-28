@@ -58,6 +58,10 @@ public class TestCarControl : MonoBehaviour
                 uiHandlingAttribute.value = HandlingIndex;
             }
         }
+
+
+        // Play the start-up sound
+        SoundController.GetComponent<SoundController>().PlayStartUpSound();
     }
 
     float GetAccelerationConstant(int index)
@@ -151,6 +155,9 @@ public class TestCarControl : MonoBehaviour
         if (!Mathf.Approximately(steeringInput, 0))
         {
             acceleration_ = Quaternion.Euler(0, 0, -Mathf.Sign(steeringInput) * GetHandlingConstant(HandlingIndex)) * acceleration_;
+
+            // Play the cornering sound
+            SoundController.GetComponent<SoundController>().PlayCorneringSound();
         }
 
         //velocity_ = Vector3.MoveTowards(transform.position, transform.position + acceleration_, Time.fixedDeltaTime) - transform.position;
@@ -160,6 +167,9 @@ public class TestCarControl : MonoBehaviour
             coast_ = 1;
             velocity_ = Vector3.Lerp(transform.up, acceleration_.normalized, GetAccelerationConstant(AccelerationIndex));
             velocity_ = Vector3.ClampMagnitude(velocity_, GetMaximumVelocity(MaximumVelocityIndex));
+
+            // Play the acceleration sound
+            SoundController.GetComponent<SoundController>().PlayAccelerationSound();
         }
         else if (coast_ > 0)
         {
@@ -167,6 +177,14 @@ public class TestCarControl : MonoBehaviour
             if (acceleratorInput < 0)
             {
                 slowFactor *= GetBrakingMultiplier(BrakingIndex);
+
+                // Play the braking sound
+                SoundController.GetComponent<SoundController>().PlayBrakingSound();
+            }
+            else
+            {
+                // Play the coasting sound
+                SoundController.GetComponent<SoundController>().PlayCoastingSound();
             }
 
             coast_ -= slowFactor * Time.fixedDeltaTime;
@@ -177,6 +195,9 @@ public class TestCarControl : MonoBehaviour
             {
                 velocity_ = Vector3.zero;
                 coast_ = 0;
+
+                // Play the idling sound
+                SoundController.GetComponent<SoundController>().PlayIdlingSound();
             }
         }
 
@@ -254,6 +275,9 @@ public class TestCarControl : MonoBehaviour
         // TODO: Upgrade? other.GetContacts(contacts_);
         velocity_ = Vector3.Reflect(velocity_, other.contacts[0].normal);
         acceleration_ = Vector3.zero;
+
+        // Play the crash sound
+        SoundController.GetComponent<SoundController>().PlayCrashingSound();
     }
 
     private Text uiSpeed;
@@ -284,4 +308,7 @@ public class TestCarControl : MonoBehaviour
 
     [SerializeField]
     private int HandlingIndex;
+
+    [SerializeField]
+    private GameObject SoundController;
 }
