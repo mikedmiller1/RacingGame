@@ -3092,7 +3092,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PlayerObject: {fileID: 251421774}
-  StartUp: {fileID: 8300000, guid: 795b991098429c14390d7e4ae22c083b, type: 3}
+  StartUp1: {fileID: 8300000, guid: 328c0e5a987e8054ab502de56ab8dfbf, type: 3}
+  StartUp2: {fileID: 8300000, guid: acce3c6997e9b39458b3fd07e2270b71, type: 3}
+  Idling1: {fileID: 8300000, guid: a2a0832cf00eb034eb100bdba4b437d9, type: 3}
+  Idling2: {fileID: 8300000, guid: 4d74fff3712bbab48a2baa1a78d1fbf0, type: 3}
+  Accelerating1: {fileID: 8300000, guid: 92bca33b934e58f458491852d1255996, type: 3}
+  Accelerating2: {fileID: 8300000, guid: ef252d3ea05774a4aa1acf8865227549, type: 3}
+  Coasting1: {fileID: 8300000, guid: fcdbe80155be6d743b29a00b7442283d, type: 3}
+  Coasting2: {fileID: 8300000, guid: b9818214e64f4244e88bde1a594d0a56, type: 3}
+  Braking1: {fileID: 8300000, guid: 0182ca67dd9cbe343a45a6cb2c1f8c28, type: 3}
+  Braking2: {fileID: 8300000, guid: bd10411080dba994b9c7655f1a8e41c0, type: 3}
+  Cornering1: {fileID: 8300000, guid: a02273b5c3f98744e899a15be4346793, type: 3}
+  Cornering2: {fileID: 8300000, guid: 2299ab21cbfc5b34f8cbbfeeeff27785, type: 3}
+  Crashing1: {fileID: 8300000, guid: af6b75b88e2c8ea44b2ffc6046969710, type: 3}
+  Crashing2: {fileID: 8300000, guid: 71362509a9013044dbad87dfa9649612, type: 3}
 --- !u!4 &876375984
 Transform:
   m_ObjectHideFlags: 0

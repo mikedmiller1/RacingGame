@@ -33,7 +33,7 @@ public class SoundController : MonoBehaviour
         Idling,
         Accelerating,
         Coasting,
-        Braking
+        Braking,
     }
 
     #endregion
@@ -45,31 +45,50 @@ public class SoundController : MonoBehaviour
     /// <summary>
     /// The initial sound played when the scene starts.
     /// </summary>
-    public AudioClip StartUp;
+    public AudioClip StartUp1;
+    public AudioClip StartUp2;
 
 
     /// <summary>
     /// Played when the player is stopped and not moving.
     /// </summary>
-    public AudioClip Idling;
+    public AudioClip Idling1;
+    public AudioClip Idling2;
 
 
     /// <summary>
     /// Played when the player is accelerating.
     /// </summary>
-    public AudioClip Accelerating;
+    public AudioClip Accelerating1;
+    public AudioClip Accelerating2;
 
 
     /// <summary>
     /// Played when the player is coasting, ie. not accelerating or braking.
     /// </summary>
-    public AudioClip Coasting;
+    public AudioClip Coasting1;
+    public AudioClip Coasting2;
 
 
     /// <summary>
     /// Played when the player is braking.
     /// </summary>
-    public AudioClip Braking;
+    public AudioClip Braking1;
+    public AudioClip Braking2;
+
+
+    /// <summary>
+    /// Played when the player is cornering.
+    /// </summary>
+    public AudioClip Cornering1;
+    public AudioClip Cornering2;
+
+
+    /// <summary>
+    /// Played when the player crashes into a barrier.
+    /// </summary>
+    public AudioClip Crashing1;
+    public AudioClip Crashing2;
 
     #endregion
 
@@ -94,7 +113,7 @@ public class SoundController : MonoBehaviour
     private void Start()
     {
         // Play the start-up sound
-        source.PlayOneShot( StartUp );
+        source.PlayOneShot( StartUp1 );
     }
 
 
@@ -103,13 +122,18 @@ public class SoundController : MonoBehaviour
     /// </summary>
     void Update()
     {
-		// Check the state of the player (ie. accelerating, braking, etc.)
+		// Check the acceleration state of the player (ie. accelerating, braking, etc.)
 
         // If this is different than the sound currently being played
             
             // Stop the current sound
 
             // Play the corresponding sound
+
+        
+        // Check the cornering state of the player
+
+        // If cornering, play the cornering sound
 	}
 
     #endregion
