@@ -134,6 +134,7 @@ public class GameController : MonoBehaviour
 			NewDriver.GetComponent<AIPlayerController> ().rand = rand;
 			NewDriver.GetComponent<AIPlayerController> ().Debugging = Debugging;
 			NewDriver.GetComponent<AIPlayerController> ().MaxSpeed = NormalMaxSpeed;
+			NewDriver.GetComponent<SpriteRenderer> ().material.SetColor ("_Color", Random.ColorHSV (0f, 1f, 1f, 1f, 0.5f, 1f));
 
 			// Get a random speed adjustment
 			double SpeedAdjustment = (rand.NextDouble () - 0.5) * MaxSpeedAdjustmentRange;
