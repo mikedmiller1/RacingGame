@@ -73,7 +73,7 @@ BoxCollider2D:
   m_GameObject: {fileID: 1121317686367484}
   m_Enabled: 1
   m_Density: 1
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 6200000, guid: d7dedb842706741cf8bcc8511bd1cd5e, type: 2}
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
@@ -122,6 +122,7 @@ MonoBehaviour:
   AccelerationIndex: 2
   BrakingIndex: 2
   HandlingIndex: 2
+  SoundController: {fileID: 0}
 --- !u!114 &114915245922235614
 MonoBehaviour:
   m_ObjectHideFlags: 1
