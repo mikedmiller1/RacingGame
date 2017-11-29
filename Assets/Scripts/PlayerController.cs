@@ -100,9 +100,10 @@ public class PlayerController : MonoBehaviour
             uiBrake.value = axis;
         }
 
-        rb.angularVelocity = Input.GetAxis("Horizontal") * -GetTorque(HandlingIndex);
-
         var forwardVelocity = Vector3.Dot(rb.velocity, transform.up);
+        var torqueFactor = Mathf.Lerp(0, GetTorque(HandlingIndex), Mathf.Abs(forwardVelocity));
+        rb.angularVelocity = Input.GetAxis("Horizontal") * -torqueFactor;
+
         var slipVelocity = Vector3.Dot(rb.velocity, transform.right);
         var gripFactor = slipVelocity > gripThreshold && forwardVelocity > 3f ? 1 - slipGrip : 1 - stuckGrip;
 
