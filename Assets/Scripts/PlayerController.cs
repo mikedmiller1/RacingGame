@@ -21,6 +21,26 @@ public class PlayerController : MonoBehaviour
                 uiBrake = control;
                 uiBrake.value = 0;
             }
+            else if (control.name == "MaximumVelocityAttribute")
+            {
+                uiMaximumVelocityAttribute = control;
+                uiMaximumVelocityAttribute.value = MaximumVelocityIndex;
+            }
+            else if (control.name == "AccelerationAttribute")
+            {
+                uiAccelerationAttribute = control;
+                uiAccelerationAttribute.value = AccelerationIndex;
+            }
+            else if (control.name == "BrakingAttribute")
+            {
+                uiBrakingAttribute = control;
+                uiBrakingAttribute.value = BrakingIndex;
+            }
+            else if (control.name == "HandlingAttribute")
+            {
+                uiHandlingAttribute = control;
+                uiHandlingAttribute.value = HandlingIndex;
+            }
         }
     }
 
@@ -61,11 +81,13 @@ public class PlayerController : MonoBehaviour
 
     void FixedUpdate()
     {
+        UpdateAttributes();
+
         var rb = GetComponent<Rigidbody2D>();
         if (acceleratorActive)
         {
             var axis = GetAxisInput("Accelerate");
-            var accelerationForce = axis * GetAcceleration(0);
+            var accelerationForce = axis * GetAcceleration(AccelerationIndex);
             rb.AddForce(transform.up * accelerationForce);
             uiAccelerator.value = axis;
         }
@@ -73,12 +95,12 @@ public class PlayerController : MonoBehaviour
         if (brakeActive)
         {
             var axis = GetAxisInput("Brake");
-            var brakingForce = axis * GetBraking(0);
+            var brakingForce = axis * GetBraking(BrakingIndex);
             rb.AddForce(transform.up * -brakingForce);
             uiBrake.value = axis;
         }
 
-        rb.angularVelocity = Input.GetAxis("Horizontal") * -GetTorque(0);
+        rb.angularVelocity = Input.GetAxis("Horizontal") * -GetTorque(HandlingIndex);
 
         var forwardVelocity = Vector3.Dot(rb.velocity, transform.up);
         var slipVelocity = Vector3.Dot(rb.velocity, transform.right);
@@ -111,6 +133,34 @@ public class PlayerController : MonoBehaviour
         return GetGeometricFactor(baseTorque, index);
     }
 
+    void UpdateAttribute(ref int attribute, KeyCode keyIncrease, KeyCode keyDecrease)
+    {
+        int delta = 0;
+        if (Input.GetKeyDown(keyIncrease))
+        {
+            delta = 1;
+        }
+        else if (Input.GetKeyDown(keyDecrease))
+        {
+            delta = -1;
+        }
+
+        attribute = (int)Mathf.Clamp(attribute + delta, 0, 5);
+    }
+
+    void UpdateAttributes()
+    {
+        UpdateAttribute(ref MaximumVelocityIndex, KeyCode.U, KeyCode.J);
+        UpdateAttribute(ref AccelerationIndex, KeyCode.I, KeyCode.K);
+        UpdateAttribute(ref BrakingIndex, KeyCode.O, KeyCode.L);
+        UpdateAttribute(ref HandlingIndex, KeyCode.P, KeyCode.Semicolon);
+
+        uiMaximumVelocityAttribute.value = MaximumVelocityIndex;
+        uiAccelerationAttribute.value = AccelerationIndex;
+        uiBrakingAttribute.value = BrakingIndex;
+        uiHandlingAttribute.value = HandlingIndex;
+    }
+
     private float stuckGrip = 0.5f;
     private float slipGrip = 0.1f;
     private float gripThreshold = 0.5f;
@@ -120,6 +170,16 @@ public class PlayerController : MonoBehaviour
 
     private bool lastInputKeyboard = true;
 
+    private int MaximumVelocityIndex;
+    private int AccelerationIndex;
+    private int BrakingIndex;
+    private int HandlingIndex;
+
     private Slider uiAccelerator;
     private Slider uiBrake;
+
+    private Slider uiMaximumVelocityAttribute;
+    private Slider uiAccelerationAttribute;
+    private Slider uiBrakingAttribute;
+    private Slider uiHandlingAttribute;
 }
