@@ -24,6 +24,7 @@ GameObject:
   - component: {fileID: 61754771268615726}
   - component: {fileID: 50856237977851046}
   - component: {fileID: 95584429840817798}
+  - component: {fileID: 114915245922235614}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -56,8 +57,8 @@ Rigidbody2D:
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
   m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
+  m_LinearDrag: 1
+  m_AngularDrag: 0
   m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
@@ -112,7 +113,7 @@ MonoBehaviour:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1121317686367484}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0261590b70c804db7b9f9d26d10cd23c, type: 3}
   m_Name: 
@@ -121,6 +122,17 @@ MonoBehaviour:
   AccelerationIndex: 2
   BrakingIndex: 2
   HandlingIndex: 2
+--- !u!114 &114915245922235614
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1121317686367484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9025ba542cc9642b09e6e769528c13ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &212620863069635542
 SpriteRenderer:
   m_ObjectHideFlags: 1
