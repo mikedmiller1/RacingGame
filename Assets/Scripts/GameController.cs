@@ -177,7 +177,6 @@ public class GameController : MonoBehaviour
 //			for (int PlayerNum = 0; PlayerNum < NumberOfAIDrivers; PlayerNum++)
 //				AIDrivers [PlayerNum].GetComponent<AIPlayerController> ().NavigationActive = true;
 //		}
-			
 	}
 
 	#endregion
