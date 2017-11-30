@@ -21,8 +21,6 @@ GameObject:
   - component: {fileID: 4456351802462518}
   - component: {fileID: 114369301385011122}
   - component: {fileID: 212743297353658922}
-  - component: {fileID: 60130928799034722}
-  - component: {fileID: 58478708159120496}
   m_Layer: 2
   m_Name: Turn
   m_TagString: Untagged
@@ -43,58 +41,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!58 &58478708159120496
-CircleCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1888513902288514}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 6200000, guid: 9e20a4271f16a4d0a84fcd355f1c2028, type: 2}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 1.9, y: -1.9055303}
-  serializedVersion: 2
-  m_Radius: 0.2
---- !u!60 &60130928799034722
-PolygonCollider2D:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1888513902288514}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 6200000, guid: 9e20a4271f16a4d0a84fcd355f1c2028, type: 2}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 3.84, y: 3.84}
-    newSize: {x: 3.84, y: 3.84}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Points:
-    m_Paths:
-    - - {x: -1.92, y: 1.92}
-      - {x: -1.92, y: -1.92}
-      - {x: -1.7264612, y: -1.9199829}
-      - {x: -1.7271026, y: -1.5121441}
-      - {x: -1.7796063, y: -0.95513153}
-      - {x: -1.5952959, y: -0.22411919}
-      - {x: -1.3434763, y: 0.215209}
-      - {x: -0.87569416, y: 0.8025923}
-      - {x: -0.2806574, y: 1.3655777}
-      - {x: 0.31900275, y: 1.6389055}
-      - {x: 1.2574992, y: 1.7163506}
-      - {x: 1.9209087, y: 1.7329817}
-      - {x: 1.9273188, y: 1.9220791}
 --- !u!114 &114369301385011122
 MonoBehaviour:
   m_ObjectHideFlags: 1
