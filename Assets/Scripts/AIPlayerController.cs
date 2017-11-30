@@ -111,6 +111,48 @@ public class AIPlayerController : MonoBehaviour
 	/// </summary>
 	private bool Avoiding = false;
 
+
+
+    /// <summary>
+    /// The previous position of the driver, used to calculate velocity.
+    /// </summary>
+    private Vector2 PreviousPosition = new Vector2();
+    private List<Vector2> AveragePreviousPosition = new List<Vector2>(10);
+
+
+    /// <summary>
+    /// The length of time to be stuck before initiating unstuck mode.
+    /// </summary>
+    public float StuckTimeout = 2;
+
+
+
+    /// <summary>
+    /// The amount of time the driver should reverse to get unstuck.
+    /// </summary>
+    public float GetUnstuckTime = 2;
+
+
+
+    /// <summary>
+    /// The amount of time the driver has been stuck and not moving.
+    /// </summary>
+    private float ElapsedStuckTime = 0;
+
+
+
+    /// <summary>
+    /// The amount of time the driver has spent getting unstuck.
+    /// </summary>
+    private float ElapsedGettingUnstuckTime = 0;
+
+
+
+    /// <summary>
+    /// Flag indicating if the driver is in the process of getting unstuck.
+    /// </summary>
+    private bool GettingUnstuck = false;
+
 	#endregion
 
 
@@ -131,7 +173,7 @@ public class AIPlayerController : MonoBehaviour
 	#region Unity Methods
 
 	// Update is called once per frame
-	void Update ()
+	void FixedUpdate ()
 	{
 		// If there are waypoints to use and navigation is active
 		if (Waypoints.Count > 0 && NavigationActive) {
@@ -217,10 +259,33 @@ public class AIPlayerController : MonoBehaviour
 
 
 			// If the driver is avoiding an obstacle
-			if (Avoiding) {
+			if (Avoiding && !GettingUnstuck) {
 				// Rotate the towards vector by the avoidance angle, in the correct direction
 				Towards = Quaternion.Euler (0, 0, CollisionAvoidanceAngle * AvoidanceDirection) * Towards;
-			}
+            }
+
+
+            // Calculate the vehicle velocity
+            Vector2 Velocity = (Position - PreviousPosition) / Time.fixedDeltaTime;
+
+            // Check if the driver is stuck (not moving, or barely moving)
+            if( Velocity.magnitude < 10 )
+            {
+                // Increment the stuck time
+                ElapsedStuckTime += Time.fixedDeltaTime;
+            }
+            // Otherwise, reduce the stuck time
+            else
+            {
+                ElapsedStuckTime -= Time.fixedDeltaTime * 3;
+            }
+
+            // If the stuck timeout has elapsed
+            if( ElapsedStuckTime >= StuckTimeout )
+            {
+                // Enable getting unstuck mode
+                GettingUnstuck = true;
+            }
 
 
 			// Initialize the distance to move as the maximum speed
@@ -233,6 +298,25 @@ public class AIPlayerController : MonoBehaviour
 
 			// Multiply the direction unit vector by the speed to get the XY distance
 			Vector2 MoveVector = Towards.normalized * DistanceToMove;
+
+            // If the driver is in getting unstuck mode
+            if( GettingUnstuck )
+            {
+                // Reverse the move vector to go backwards
+                MoveVector *= -1;
+
+                // Increment the getting unstuck time
+                ElapsedGettingUnstuckTime += Time.fixedDeltaTime;
+
+                // If the required getting unstuck time has passed
+                if( ElapsedGettingUnstuckTime >= GetUnstuckTime )
+                {
+                    // Turn off getting unstuck mode
+                    GettingUnstuck = false;
+                    ElapsedGettingUnstuckTime = 0;
+                    ElapsedStuckTime = 0;
+                }
+            }
 
 			// Calculate the new position
 			Vector2 NewPosition = Position + MoveVector;
@@ -257,6 +341,10 @@ public class AIPlayerController : MonoBehaviour
 				Waypoints.Remove (CurrentWaypoint);
 			}
 
+
+            // Store the current position as the previous position for the next update
+            PreviousPosition.x = Position.x;
+            PreviousPosition.y = Position.y;
 		}
 
 	}
