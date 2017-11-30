@@ -47,23 +47,36 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!acceleratorActive && Input.GetAxis("Accelerate") != 0)
+        if (!joyAcceleratorActive && Input.GetAxis("AccelerateJoy") != 0)
         {
-            acceleratorActive = true;
+            joyAcceleratorActive = true;
         }
 
-        if (!brakeActive && Input.GetAxis("Brake") != 0)
+        if (!joyBrakeActive && Input.GetAxis("BrakeJoy") != 0)
         {
-            brakeActive = true;
+            joyBrakeActive = true;
         }
 
-        if (Input.anyKey)
+        if (useKeyboard)
         {
-            lastInputKeyboard = true;
+            if (joyAcceleratorActive && Input.GetAxis("AccelerateJoy") != -1f ||
+                joyBrakeActive && Input.GetAxis("BrakeJoy") != -1f)
+            {
+                useKeyboard = false;
+            }
         }
-        else if (Input.GetKey(KeyCode.Joystick1Button7) || Input.GetKey(KeyCode.Joystick1Button6))
+        else if (Input.GetAxis("Accelerate") != 0 || Input.GetAxis("Brake") != 0)
         {
-            lastInputKeyboard = false;
+            useKeyboard = true;
+        }
+    }
+
+    void OnApplicationFocus(bool hasFocus)
+    {
+        if (!hasFocus)
+        {
+            joyAcceleratorActive = false;
+            joyBrakeActive = false;
         }
     }
 
@@ -76,7 +89,30 @@ public class PlayerController : MonoBehaviour
 
     float GetAxisInput(string axisName)
     {
-        return lastInputKeyboard ? Input.GetAxis(axisName) : ConvertToRange(Input.GetAxis(axisName), -1, 1, 0, 1);
+        if (useKeyboard)
+        {
+            return Input.GetAxis(axisName);
+        }
+        else
+        {
+            var axis = -1f;
+            if (axisName == "Accelerate")
+            {
+                if (joyAcceleratorActive)
+                {
+                    axis = Input.GetAxis("AccelerateJoy");
+                }
+            }
+            else if (axisName == "Brake")
+            {
+                if (joyBrakeActive)
+                {
+                    axis = Input.GetAxis("BrakeJoy");
+                }
+            }
+
+            return ConvertToRange(axis, -1, 1, 0, 1);
+        }
     }
 
     void FixedUpdate()
@@ -84,21 +120,15 @@ public class PlayerController : MonoBehaviour
         UpdateAttributes();
 
         var rb = GetComponent<Rigidbody2D>();
-        if (acceleratorActive)
-        {
-            var axis = GetAxisInput("Accelerate");
-            var accelerationForce = axis * GetAcceleration(AccelerationIndex);
-            rb.AddForce(transform.up * accelerationForce);
-            uiAccelerator.value = axis;
-        }
+        var axis = GetAxisInput("Accelerate");
+        var accelerationForce = axis * GetAcceleration(AccelerationIndex);
+        rb.AddForce(transform.up * accelerationForce);
+        uiAccelerator.value = axis;
 
-        if (brakeActive)
-        {
-            var axis = GetAxisInput("Brake");
-            var brakingForce = axis * GetBraking(BrakingIndex);
-            rb.AddForce(transform.up * -brakingForce);
-            uiBrake.value = axis;
-        }
+        axis = GetAxisInput("Brake");
+        var brakingForce = axis * GetBraking(BrakingIndex);
+        rb.AddForce(transform.up * -brakingForce);
+        uiBrake.value = axis;
 
         var forwardVelocity = Vector3.Dot(rb.velocity, transform.up);
         var torqueFactor = Mathf.Lerp(0, GetTorque(HandlingIndex), Mathf.Abs(forwardVelocity));
@@ -166,10 +196,10 @@ public class PlayerController : MonoBehaviour
     private float slipGrip = 0.1f;
     private float gripThreshold = 0.5f;
 
-    private bool acceleratorActive = false;
-    private bool brakeActive = false;
+    private bool joyAcceleratorActive = false;
+    private bool joyBrakeActive = false;
 
-    private bool lastInputKeyboard = true;
+    private bool useKeyboard = true;
 
     private int MaximumVelocityIndex;
     private int AccelerationIndex;
