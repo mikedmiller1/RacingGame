@@ -2,41 +2,23 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class IntroController : MonoBehaviour
 {
-	// Use this for initialization
-	void Start()
+    // Use this for initialization
+    void Start()
     {
-		
-	}
-	
-
-	// Update is called once per frame
-	void Update()
-    {
-        // Check for a key press
-        if( Input.anyKeyDown )
-        {
-            // Change to the track scene
-            StartCoroutine( LoadTrackAsync() );
-        }
-	}
-
-
-    /// <summary>
-    /// Loads the track scene.
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator LoadTrackAsync()
-    {
-        // Start loading the track scene
-        AsyncOperation AsyncLoad = SceneManager.LoadSceneAsync( "Circuit" );
-
-        // Wait until the scene is fully loaded before exiting
-        while( !AsyncLoad.isDone )
-        {
-            yield return null;
-        }
     }
+
+
+    // Update is called once per frame
+    void Update()
+    {
+        if(Input.GetButtonDown("Submit"))
+        {
+            var selector = GetComponentInChildren<Dropdown>();
+            SceneManager.LoadScene(selector.options[selector.value].text);
+        }
+	}
 }
