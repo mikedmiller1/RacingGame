@@ -139,35 +139,6 @@ public class SoundController : MonoBehaviour
         CorneringAudioSource = CorneringAudio.GetComponent<AudioSource>();
 	}
 
-
-    /// <summary>
-    /// Called when the object is initialized
-    /// </summary>
-    private void Start()
-    {
-        // Play the start-up sound
-    }
-
-
-    /// <summary>
-    /// Update is called once per frame.
-    /// </summary>
-    void Update()
-    {
-		// Check the acceleration state of the player (ie. accelerating, braking, etc.)
-
-        // If this is different than the sound currently being played
-            
-            // Stop the current sound
-
-            // Play the corresponding sound
-
-        
-        // Check the cornering state of the player
-
-        // If cornering, play the cornering sound
-	}
-
     #endregion
 
 
@@ -196,6 +167,16 @@ public class SoundController : MonoBehaviour
         {
             CorneringAudioSource.PlayOneShot( GetRandomSound( Cornering ) );
         }
+    }
+
+
+
+    /// <summary>
+    /// Stops playing the cornering sound.
+    /// </summary>
+    public void StopCorneringSound()
+    {
+        CorneringAudioSource.Stop();
     }
 
 
