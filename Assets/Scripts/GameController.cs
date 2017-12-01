@@ -122,10 +122,10 @@ public class GameController : MonoBehaviour
 		Waypoint[] WaypointsFromTrack = Track.GetComponentsInChildren<Waypoint> ();
 		foreach (Waypoint CurrentWaypoint in WaypointsFromTrack) {
 			// Add the waypoint to the list
-			Waypoints.Add (new Vector2 (CurrentWaypoint.transform.position.x, CurrentWaypoint.transform.position.y));
+			Waypoints.Add (new Vector2 (CurrentWaypoint.GetPosition().x, CurrentWaypoint.GetPosition().y));
 
 			if (Debugging) {
-				Instantiate (WaypointPrefab, CurrentWaypoint.transform);
+				Instantiate (WaypointPrefab, CurrentWaypoint.GetPosition(), Quaternion.identity);
 			}
 		}
 
