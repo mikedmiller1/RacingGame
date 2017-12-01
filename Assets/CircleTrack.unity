@@ -1507,6 +1507,17 @@ GameObject:
   m_Component:
   - component: {fileID: 586802831}
   - component: {fileID: 586802830}
+  - component: {fileID: 586802832}
+  - component: {fileID: 586802834}
+  - component: {fileID: 586802833}
+  - component: {fileID: 586802842}
+  - component: {fileID: 586802841}
+  - component: {fileID: 586802840}
+  - component: {fileID: 586802839}
+  - component: {fileID: 586802838}
+  - component: {fileID: 586802837}
+  - component: {fileID: 586802836}
+  - component: {fileID: 586802835}
   m_Layer: 0
   m_Name: Big Dirt Track
   m_TagString: Untagged
@@ -1571,6 +1582,138 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &586802832
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 586802829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5340fea0adbd1475e8a13dad53f19e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Offset: {x: 1.22, y: 6.83, z: 0}
+--- !u!114 &586802833
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 586802829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5340fea0adbd1475e8a13dad53f19e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Offset: {x: -9.96, y: 3.29, z: 0}
+--- !u!114 &586802834
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 586802829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5340fea0adbd1475e8a13dad53f19e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Offset: {x: -5.52, y: 5.69, z: 0}
+--- !u!114 &586802835
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 586802829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5340fea0adbd1475e8a13dad53f19e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Offset: {x: 8.94, y: 4.75, z: 0}
+--- !u!114 &586802836
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 586802829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5340fea0adbd1475e8a13dad53f19e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Offset: {x: 10.86, y: 0, z: 0}
+--- !u!114 &586802837
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 586802829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5340fea0adbd1475e8a13dad53f19e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Offset: {x: 8.94, y: -4.96, z: 0}
+--- !u!114 &586802838
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 586802829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5340fea0adbd1475e8a13dad53f19e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Offset: {x: 5.05, y: -6.92, z: 0}
+--- !u!114 &586802839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 586802829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5340fea0adbd1475e8a13dad53f19e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Offset: {x: -1.52, y: -6.97, z: 0}
+--- !u!114 &586802840
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 586802829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5340fea0adbd1475e8a13dad53f19e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Offset: {x: -6.48, y: -6.75, z: 0}
+--- !u!114 &586802841
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 586802829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5340fea0adbd1475e8a13dad53f19e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Offset: {x: -9.71, y: -3.55, z: 0}
+--- !u!114 &586802842
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 586802829}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5340fea0adbd1475e8a13dad53f19e6b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Offset: {x: -10.91, y: 0, z: 0}
 --- !u!1 &605648729
 GameObject:
   m_ObjectHideFlags: 0
@@ -4311,7 +4454,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1660774916
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4325,7 +4468,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   NumberOfAIDrivers: 10
   AIDrivers: []
-  Track: {fileID: 0}
+  Track: {fileID: 586802829}
   PlayerPrefab: {fileID: 1129043903399840, guid: d6685a8640c5b624b81b63cf7aeb27c6,
     type: 2}
   Waypoints: []
