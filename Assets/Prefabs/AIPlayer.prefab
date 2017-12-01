@@ -98,7 +98,7 @@ Animator:
   m_GameObject: {fileID: 1129043903399840}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 04ef21dd12aaa4d91a60d69794392f67, type: 2}
+  m_Controller: {fileID: 9100000, guid: 117a3b5e672b746cfa229ac22a8cf134, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -127,6 +127,9 @@ MonoBehaviour:
   RaycastDistance: 1
   RaycastAngle: 30
   CollisionAvoidanceAngle: 30
+  StuckSpeed: 7
+  StuckTimeout: 2
+  GetUnstuckTime: 1
 --- !u!212 &212450333412103066
 SpriteRenderer:
   m_ObjectHideFlags: 1
@@ -161,7 +164,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 2
-  m_Sprite: {fileID: 21300000, guid: 655e79c44e8304fbe9592164af7ec19f, type: 3}
+  m_Sprite: {fileID: 21300000, guid: ca7670117deb94768a9ed40bc5b288a9, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
