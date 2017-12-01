@@ -79,10 +79,31 @@ public class GameController : MonoBehaviour
 
 
 
-	/// <summary>
-	/// Global random number generator.
-	/// </summary>
-	private System.Random rand = new System.Random ();
+    /// <summary>
+    /// The speed below which the driver is considered stuck.
+    /// </summary>
+    public float StuckSpeed = 7;
+
+
+
+    /// <summary>
+    /// The length of time a driver should be stuck before initiating unstuck mode.
+    /// </summary>
+    public float StuckTimeout = 2;
+
+
+
+    /// <summary>
+    /// The amount of time the driver should reverse to get unstuck.
+    /// </summary>
+    public float GetUnstuckTime = 1;
+
+
+
+    /// <summary>
+    /// Global random number generator.
+    /// </summary>
+    private System.Random rand = new System.Random ();
 
 
 
@@ -108,10 +129,10 @@ public class GameController : MonoBehaviour
 		Waypoint[] WaypointsFromTrack = Track.GetComponentsInChildren<Waypoint> ();
 		foreach (Waypoint CurrentWaypoint in WaypointsFromTrack) {
 			// Add the waypoint to the list
-			Waypoints.Add (new Vector2 (CurrentWaypoint.transform.position.x, CurrentWaypoint.transform.position.y));
+			Waypoints.Add (new Vector2 (CurrentWaypoint.GetPosition().x, CurrentWaypoint.GetPosition().y));
 
 			if (Debugging) {
-				Instantiate (WaypointPrefab, CurrentWaypoint.transform);
+				Instantiate (WaypointPrefab, CurrentWaypoint.GetPosition(), Quaternion.identity);
 			}
 		}
 
@@ -134,7 +155,9 @@ public class GameController : MonoBehaviour
 			NewDriver.GetComponent<AIPlayerController> ().rand = rand;
 			NewDriver.GetComponent<AIPlayerController> ().Debugging = Debugging;
 			NewDriver.GetComponent<AIPlayerController> ().MaxSpeed = NormalMaxSpeed;
-			NewDriver.GetComponent<SpriteRenderer> ().material.SetColor ("_Color", Random.ColorHSV (0f, 1f, 1f, 1f, 0.5f, 1f));
+            NewDriver.GetComponent<AIPlayerController>().StuckTimeout = StuckTimeout;
+            NewDriver.GetComponent<AIPlayerController>().GetUnstuckTime = GetUnstuckTime;
+            NewDriver.GetComponent<SpriteRenderer> ().material.SetColor ("_Color", Random.ColorHSV (0f, 1f, 1f, 1f, 0.5f, 1f));
 
 			// Get a random speed adjustment
 			double SpeedAdjustment = (rand.NextDouble () - 0.5) * MaxSpeedAdjustmentRange;

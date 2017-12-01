@@ -252,7 +252,7 @@ InputManager:
     negativeButton: 
     positiveButton: return
     altNegativeButton: 
-    altPositiveButton: joystick button 0
+    altPositiveButton: joystick button 9
     gravity: 1000
     dead: 0.001
     sensitivity: 1000
@@ -294,16 +294,16 @@ InputManager:
     axis: 0
     joyNum: 0
   - serializedVersion: 3
-    m_Name: Accelerate
+    m_Name: AccelerateJoy
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
     positiveButton: 
     altNegativeButton: 
     altPositiveButton: 
-    gravity: 0.5
+    gravity: 1.5
     dead: 0.1
-    sensitivity: 0.5
+    sensitivity: 1
     snap: 0
     invert: 0
     type: 2
@@ -326,7 +326,7 @@ InputManager:
     axis: 1
     joyNum: 0
   - serializedVersion: 3
-    m_Name: Brake
+    m_Name: BrakeJoy
     descriptiveName: 
     descriptiveNegativeName: 
     negativeButton: 
