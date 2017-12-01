@@ -151,7 +151,7 @@ public class PlayerController : MonoBehaviour
         Vector2 CurrentAccel = ((Vector2)transform.position - PreviousPosition) / Time.fixedDeltaTime;
 
         // Check the acceleration threshold
-        if( accelerationForce > 0 && (CurrentAccel.x <= -AccelSoundThreshold )
+        if( accelerationForce > 0 && (CurrentAccel.x <= -AccelSoundThreshold) )
         {
             Sound.PlayAccelerationSound();
         }
