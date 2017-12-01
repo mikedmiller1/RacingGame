@@ -1126,7 +1126,7 @@ Prefab:
     - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
         type: 2}
       propertyPath: Offset.y
-      value: 0.85
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1888513902288514, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
       propertyPath: m_Name
@@ -1195,7 +1195,7 @@ Prefab:
     - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
         type: 2}
       propertyPath: Offset.y
-      value: -0.73
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
@@ -1335,7 +1335,12 @@ Prefab:
     - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
         type: 2}
       propertyPath: Offset.y
-      value: 0.98
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
+        type: 2}
+      propertyPath: Offset.x
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
@@ -1624,7 +1629,7 @@ Prefab:
     - target: {fileID: 114222834997789416, guid: 93b54b1b49f384c41847634f65a7aca2,
         type: 2}
       propertyPath: Offset.x
-      value: 1.09
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114222834997789416, guid: 93b54b1b49f384c41847634f65a7aca2,
         type: 2}
@@ -1718,7 +1723,7 @@ Prefab:
     - target: {fileID: 114222834997789416, guid: 93b54b1b49f384c41847634f65a7aca2,
         type: 2}
       propertyPath: Offset.x
-      value: 0.25
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_SpriteTilingProperty.newSize.x
@@ -1773,6 +1778,11 @@ Prefab:
     - target: {fileID: 1888513902288514, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
       propertyPath: m_Name
       value: Turn 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
+        type: 2}
+      propertyPath: Offset.y
+      value: -0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
@@ -1909,7 +1919,7 @@ Prefab:
     - target: {fileID: 114222834997789416, guid: 93b54b1b49f384c41847634f65a7aca2,
         type: 2}
       propertyPath: Offset.y
-      value: -0.93
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_SpriteTilingProperty.newSize.x
@@ -2387,7 +2397,7 @@ Prefab:
     - target: {fileID: 114222834997789416, guid: 93b54b1b49f384c41847634f65a7aca2,
         type: 2}
       propertyPath: Offset.x
-      value: 0.89
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114222834997789416, guid: 93b54b1b49f384c41847634f65a7aca2,
         type: 2}
@@ -3210,7 +3220,7 @@ Prefab:
     - target: {fileID: 114222834997789416, guid: 93b54b1b49f384c41847634f65a7aca2,
         type: 2}
       propertyPath: Offset.y
-      value: -0.91
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_SpriteTilingProperty.newSize.x
@@ -3450,7 +3460,7 @@ Prefab:
     - target: {fileID: 114222834997789416, guid: 93b54b1b49f384c41847634f65a7aca2,
         type: 2}
       propertyPath: Offset.y
-      value: 0.66
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1202949211121206, guid: 93b54b1b49f384c41847634f65a7aca2, type: 2}
       propertyPath: m_Name
@@ -3517,12 +3527,12 @@ Prefab:
     - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
         type: 2}
       propertyPath: Offset.x
-      value: -0.94
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
         type: 2}
       propertyPath: Offset.y
-      value: 1.83
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
@@ -4141,7 +4151,7 @@ Prefab:
     - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
         type: 2}
       propertyPath: Offset.x
-      value: -0.95
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
         type: 2}
@@ -4215,7 +4225,7 @@ Prefab:
     - target: {fileID: 114222834997789416, guid: 93b54b1b49f384c41847634f65a7aca2,
         type: 2}
       propertyPath: Offset.y
-      value: -1.12
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 0}
       propertyPath: m_SpriteTilingProperty.newSize.x
@@ -4290,7 +4300,7 @@ Prefab:
     - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
         type: 2}
       propertyPath: Offset.x
-      value: -1.01
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
         type: 2}
@@ -4351,6 +4361,16 @@ Prefab:
         type: 2}
       propertyPath: m_Enabled
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
+        type: 2}
+      propertyPath: Offset.x
+      value: 0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
+        type: 2}
+      propertyPath: Offset.y
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
@@ -5485,6 +5505,11 @@ Prefab:
       propertyPath: m_Name
       value: Turn 4
       objectReference: {fileID: 0}
+    - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
+        type: 2}
+      propertyPath: Offset.x
+      value: 0.5
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
   m_IsPrefabParent: 0
@@ -5845,6 +5870,16 @@ Prefab:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 270
       objectReference: {fileID: 0}
+    - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
+        type: 2}
+      propertyPath: Offset.x
+      value: -0.5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
+        type: 2}
+      propertyPath: Offset.y
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
   m_IsPrefabParent: 0
@@ -6066,12 +6101,12 @@ Prefab:
     - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
         type: 2}
       propertyPath: Offset.x
-      value: -1.13
+      value: -0.5
       objectReference: {fileID: 0}
     - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
         type: 2}
       propertyPath: Offset.y
-      value: 1.83
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
@@ -6221,7 +6256,12 @@ Prefab:
     - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
         type: 2}
       propertyPath: Offset.y
-      value: -0.83
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
+        type: 2}
+      propertyPath: Offset.x
+      value: 0.5
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
@@ -6708,12 +6748,12 @@ Prefab:
     - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
         type: 2}
       propertyPath: Offset.x
-      value: 1.75
+      value: 1.5
       objectReference: {fileID: 0}
     - target: {fileID: 114369301385011122, guid: 9c149b8cc60164c78a27460edaca3ccc,
         type: 2}
       propertyPath: Offset.y
-      value: 1.16
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c149b8cc60164c78a27460edaca3ccc, type: 2}
