@@ -42,6 +42,12 @@ public class PlayerController : MonoBehaviour
                 uiHandlingAttribute.value = HandlingIndex;
             }
         }
+
+        // Get the reference to the sound controller
+        Sound = SoundController.GetComponent<SoundController>();
+
+        // Play the start-up sound
+        Sound.PlayStartUpSound();
     }
 
     // Update is called once per frame
@@ -139,6 +145,45 @@ public class PlayerController : MonoBehaviour
 
         rb.velocity = transform.up * forwardVelocity +
                       transform.right * slipVelocity * gripFactor;
+
+
+        // Calculate the acceleration
+        Vector2 CurrentAccel = ((Vector2)transform.position - PreviousPosition) / Time.fixedDeltaTime;
+
+        // Check the acceleration threshold
+        if( accelerationForce > 0 && (CurrentAccel.x <= -AccelSoundThreshold) )
+        {
+            Sound.PlayAccelerationSound();
+        }
+        // Check the braking threshold
+        else if( brakingForce > 0 && CurrentAccel.x >= BrakeSoundThreshold )
+        {
+            Sound.PlayBrakingSound();
+        }
+        // Check the idling threshold
+        else if( rb.velocity.x < 0 && rb.velocity.x >= -IdleSoundThreshold )
+        {
+            Sound.PlayIdlingSound();
+        }
+        // Otherwise coasting
+        else
+        {
+            Sound.PlayCoastingSound();
+        }
+
+        // Check the cornering acceleration
+        if( CurrentAccel.y >= CorneringSoundThreshold )
+        {
+            Sound.PlayCorneringSound();
+        }
+        else
+        {
+            Sound.StopCorneringSound();
+        }
+
+        // Assign the current position to the previous position
+        PreviousPosition.x = transform.position.x;
+        PreviousPosition.y = transform.position.y;
     }
 
     private float GetGeometricFactor(float initialValue, int index)
@@ -213,4 +258,17 @@ public class PlayerController : MonoBehaviour
     private Slider uiAccelerationAttribute;
     private Slider uiBrakingAttribute;
     private Slider uiHandlingAttribute;
+
+    [SerializeField]
+    private GameObject SoundController;
+    private SoundController Sound;
+    private Vector2 PreviousPosition;
+    [SerializeField]
+    private float AccelSoundThreshold = 0.1f;
+    [SerializeField]
+    private float BrakeSoundThreshold = 0.1f;
+    [SerializeField]
+    private float CorneringSoundThreshold = 0.3f;
+    [SerializeField]
+    private float IdleSoundThreshold = 10;
 }
