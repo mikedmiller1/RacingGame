@@ -122,6 +122,7 @@ MonoBehaviour:
   AccelerationIndex: 2
   BrakingIndex: 2
   HandlingIndex: 2
+  SoundController: {fileID: 0}
 --- !u!114 &114915245922235614
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -136,7 +137,7 @@ MonoBehaviour:
   SoundController: {fileID: 0}
   AccelSoundThreshold: 0.1
   BrakeSoundThreshold: 0.1
-  CorneringSoundThreshold: 0.3
+  CorneringSoundThreshold: 0.1
   IdleSoundThreshold: 1
 --- !u!212 &212620863069635542
 SpriteRenderer:

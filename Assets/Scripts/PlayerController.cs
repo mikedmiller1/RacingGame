@@ -48,6 +48,10 @@ public class PlayerController : MonoBehaviour
 
         // Play the start-up sound
         Sound.PlayStartUpSound();
+
+        // Assign the current position to the previous position
+        PreviousPosition.x = transform.position.x;
+        PreviousPosition.y = transform.position.y;
     }
 
     // Update is called once per frame
@@ -161,7 +165,7 @@ public class PlayerController : MonoBehaviour
             Sound.PlayBrakingSound();
         }
         // Check the idling threshold
-        else if( rb.velocity.x < 0 && rb.velocity.x >= -IdleSoundThreshold )
+        else if( Mathf.Abs(rb.velocity.x) <= IdleSoundThreshold )
         {
             Sound.PlayIdlingSound();
         }
