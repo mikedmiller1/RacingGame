@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TimingAndScoring : MonoBehaviour
@@ -16,7 +17,7 @@ public class TimingAndScoring : MonoBehaviour
         PlayerLapTime.text = string.Empty;
         PlayerPosition.text = string.Empty;
 
-        if (!raceState_.TrackState) return;
+        if (raceState_.TrackState == RaceState.TrackStates.Red) return;
 
         raceState_.RaceTime += TimeSpan.FromSeconds(Time.deltaTime);
         RaceTime.text = raceState_.RaceTime.ToString();
@@ -40,7 +41,7 @@ public class TimingAndScoring : MonoBehaviour
 
     public void ReportLap(GameObject car)
     {
-        if (!raceState_.TrackState) raceState_.TrackState = true;
+        if (raceState_.TrackState == RaceState.TrackStates.Red) raceState_.TrackState = RaceState.TrackStates.Green;
         var id = car.GetInstanceID();
         if (!raceState_.CarData.ContainsKey(id))
         {
@@ -52,13 +53,46 @@ public class TimingAndScoring : MonoBehaviour
         }
 
         var carData = raceState_.CarData[id];
-        carData.CurrentLap++;
-        if (carData.LapTimes.Count > 0)
+        // HACK: don't count impossible quick laps; remove this if
+        // the AI ever gets changed to support backward lap detection,
+        // or if backward lap detection is improved
+        if (!carData.Finished && (carData.LapTimes.Count == 0 || carData.LapTimes[carData.LapTimes.Count - 1] > 10))
         {
-            carData.LastLapTime = carData.LapTimes[carData.LapTimes.Count - 1];
+            carData.CurrentLap++;
+            if (carData.CurrentLap > raceState_.TotalLaps)
+            {
+                raceState_.TrackState = RaceState.TrackStates.Checkered;
+            }
+
+            if (raceState_.TrackState == RaceState.TrackStates.Checkered)
+            {
+                carData.Finished = true;
+            }
+
+            if (carData.LapTimes.Count > 0)
+            {
+                carData.LastLapTime = carData.LapTimes[carData.LapTimes.Count - 1];
+            }
+
+            carData.LapTimes.Add(0);
         }
 
-        carData.LapTimes.Add(0);
+        var allFinished = false;
+        foreach (CarState carState in raceState_.CarData.Values)
+        {
+            if (!carState.Finished)
+            {
+                allFinished = false;
+                break;
+            }
+
+            allFinished = true;
+        }
+
+        if (allFinished)
+        {
+            SceneManager.LoadScene("IntroScreen");
+        }
 
         // Always do this last
         UpdatePositions(carData);
@@ -93,13 +127,15 @@ public class TimingAndScoring : MonoBehaviour
         public RaceState()
         {
             CarData = new Dictionary<int, CarState>();
-            TrackState = false;
+            TrackState = TrackStates.Red;
             CurrentLap = 0;
-            TotalLaps = 0;
+            TotalLaps = 2;
             Positions = new List<CarState>();
         }
 
-        public bool TrackState { get; set; }
+        public enum TrackStates { Red, Green, Checkered }
+
+        public TrackStates TrackState { get; set; }
         public int TotalLaps { get; set; }
         public int CurrentLap { get; set; }
         public TimeSpan RaceTime { get; set; }
@@ -115,11 +151,13 @@ public class TimingAndScoring : MonoBehaviour
             CurrentLap = 0;
             LastLapTime = 0;
             LapTimes = new List<float>();
+            Finished = false;
         }
 
         public int CurrentLap { get; set; }
         public float LastLapTime { get; set; }
         public List<float> LapTimes { get; set; }
+        public bool Finished { get; set; }
     }
 
     private RaceState raceState_ = new RaceState();
