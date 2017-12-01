@@ -9,6 +9,7 @@ public class TimingAndScoring : MonoBehaviour
 {
     void Start()
     {
+        flagSprites_ = Resources.LoadAll<Sprite>("Sprites/Flags");
     }
 
     void Update()
@@ -16,8 +17,22 @@ public class TimingAndScoring : MonoBehaviour
         RaceTime.text = string.Empty;
         PlayerLapTime.text = string.Empty;
         PlayerPosition.text = string.Empty;
+        Flag.enabled = raceState_.TrackState != RaceState.TrackStates.Red;
 
         if (raceState_.TrackState == RaceState.TrackStates.Red) return;
+
+        switch (raceState_.TrackState)
+        {
+            case RaceState.TrackStates.Green:
+                Flag.sprite = flagSprites_[0];
+                break;
+            case RaceState.TrackStates.White:
+                Flag.sprite = flagSprites_[1];
+                break;
+            case RaceState.TrackStates.Checkered:
+                Flag.sprite = flagSprites_[2];
+                break;
+        }
 
         raceState_.RaceTime += TimeSpan.FromSeconds(Time.deltaTime);
         RaceTime.text = raceState_.RaceTime.ToString();
@@ -59,7 +74,11 @@ public class TimingAndScoring : MonoBehaviour
         if (!carData.Finished && (carData.LapTimes.Count == 0 || carData.LapTimes[carData.LapTimes.Count - 1] > 10))
         {
             carData.CurrentLap++;
-            if (carData.CurrentLap > raceState_.TotalLaps)
+            if (raceState_.TrackState != RaceState.TrackStates.Checkered && carData.CurrentLap == raceState_.TotalLaps)
+            {
+                raceState_.TrackState = RaceState.TrackStates.White;
+            }
+            else if (carData.CurrentLap > raceState_.TotalLaps)
             {
                 raceState_.TrackState = RaceState.TrackStates.Checkered;
             }
@@ -133,7 +152,7 @@ public class TimingAndScoring : MonoBehaviour
             Positions = new List<CarState>();
         }
 
-        public enum TrackStates { Red, Green, Checkered }
+        public enum TrackStates { Red, Green, White, Checkered }
 
         public TrackStates TrackState { get; set; }
         public int TotalLaps { get; set; }
@@ -161,6 +180,7 @@ public class TimingAndScoring : MonoBehaviour
     }
 
     private RaceState raceState_ = new RaceState();
+    private Sprite[] flagSprites_;
 
     [SerializeField]
     private Text RaceTime;
@@ -170,4 +190,7 @@ public class TimingAndScoring : MonoBehaviour
 
     [SerializeField]
     private Text PlayerPosition;
+
+    [SerializeField]
+    private Image Flag;
 }
