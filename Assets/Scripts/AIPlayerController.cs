@@ -372,8 +372,8 @@ public class AIPlayerController : MonoBehaviour
             transform.position = NewPosition;
 
             // Rotate to the destination
-            Quaternion TowardsRotation = Quaternion.LookRotation (Towards.normalized);
-            TowardsRotation = TowardsRotation * Quaternion.Euler( 0, 90, 90 );  // Have to rotate 90* about Y and Z for some reason...
+            var angle = Mathf.Atan2(Towards.y, Towards.x) * Mathf.Rad2Deg - 90;
+            var TowardsRotation = Quaternion.AngleAxis(angle, Vector3.forward);
             transform.rotation = Quaternion.Slerp( transform.rotation, TowardsRotation, Time.deltaTime * 8 );
 
 
