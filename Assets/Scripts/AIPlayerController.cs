@@ -144,7 +144,7 @@ public class AIPlayerController : MonoBehaviour
     /// <summary>
     /// The amount of time the driver should reverse to get unstuck.
     /// </summary>
-    public float GetUnstuckTime = 2;
+    public float GetUnstuckTime = 1;
 
 
 
